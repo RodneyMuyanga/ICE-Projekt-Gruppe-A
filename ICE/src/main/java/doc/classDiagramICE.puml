@@ -2,43 +2,52 @@
 !pragma layout smetana
 'https://plantuml.com/class-diagram
 
-class homepage
-class recycled
-class login
-class sell
-class shoppingCart
-class payment
-class clothing
+class Homepage
+class ShoppingCart
+class Payment
+class Clothing
 
-object jacket
-object tShirt
-object boots
-object sneakers
-object hoodies
-object pants
-class user
+class Jacket
+class TShirt
+class Boots
+class Sneakers
+class Pants
+class Hoodies
+class User
 
-class dbConnector
+class DBConnector
 
-homepage --> clothing
-homepage --> recycled
-homepage --> login
-homepage --> shoppingCart
-user o-- sell
+Homepage o--- Clothing
+Homepage o--- ManageRecycled
+Homepage o-- ShoppingCart
+Homepage o-- User
+Homepage o-- DBConnector
 
-shoppingCart o-- payment
+ShoppingCart o-- Payment
 
-clothing --> jacket
-clothing ---> tShirt
-clothing --> boots
-clothing ---> sneakers
-clothing --> hoodies
-clothing ---> pants
+Clothing --> TShirt
+Clothing --> Jacket
+Clothing --> Hoodies
+Clothing ---> Pants
+Clothing ---> Sneakers
+Clothing ---> Boots
 
-login --> user
 
-class clothing {
- arrayList<items>clothingArray
+class Homepage{
+
+
+    headerDialog()
+    chooseHeaderOption()
+    chooseMenClothing()
+    chooseWomenClothing()
+    chooseKidsClothing()
+    chooseRecycledClothing()
+
+    loginAccount()
+    createAccount()
+}
+
+class Clothing {
 
  String name
  int ID
@@ -50,57 +59,109 @@ class clothing {
  String brand
 }
 
+class TShirt{
+String size
+
+public TShirt(String size)
+super()
+}
+
+class Jacket{
+String size
+
+public Jacket(String size)
+super()
+}
+
+class Hoodies{
+String size
+
+public Hoodies(String size)
+super()
+}
+
+class Pants{
+int size
+
+public Pants(int size)
+super()
+}
 
 
-class shoppingCart {
-    itemID
-    sum
+class Sneakers{
+int size
+public Boots(int size)
+super()
+}
 
-    dbConnector(itemsInCart)
+class Boots{
+int size
+public Boots(int size)
+super()
+}
+
+
+class ShoppingCart {
+    ArrayList<Clothing> itemsInCart
+    float sum
+
     removeItem()
-    addItem( ItemID )
-
+    addItem()
 }
 
-class login {
-    createAccout()
-    login()
-
-}
-
-class user {
+class User {
     int id
-    String name
+    String username
     String password
     String email
+    String address
+    int regNr
+    int accountNr
+
+    public User(String username, String password, String email, String address, int regNr, int accountNr)
+    public User(String username, String password, String email)
 
     dbConnector(userSaleList)
     sell()
 }
 
 
-class sell {
-    super
-    regNr
-    accountNr
-}
-
-class payment {
+class Payment {
 
     paymentId
-    userID
     amount
+
+
+    paymentDialog()
+    if logged in, no detials needed()
+    else if not logged in, provide details()
+    displayCart()
+    printReciept()
+    removeStock()
 }
 
-class recycled {
-    dbConnector(clothingRecycled)
+class ManageRecycled {
+    sellingDialog()
+    registerClothing()
+    paymentCalculator()
 }
 
-class dbConnector {
-    arrayList<items>clothingRecycled
-    arrayList<items>userSaleList
-    arrayList<items>clothingArray
-    arrayList<items>itemsInCart
+class DBConnector {
+    ArrayList<Clothing> clothesRecycled
+    ArrayList<User> userSaleList
+    ArrayList<Clothing> clothes
+
+    readClothingData()
+    saveRecycledData()
+    readUserData()
+    saveUserData()
+
+
+    getClothesRecycled()
+    getUserSaleList()
+    getClothes()
+
+
 }
 
 @enduml
