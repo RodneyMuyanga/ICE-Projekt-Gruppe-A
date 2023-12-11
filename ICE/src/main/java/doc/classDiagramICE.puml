@@ -1,0 +1,106 @@
+@startuml
+!pragma layout smetana
+'https://plantuml.com/class-diagram
+
+class homepage
+class recycled
+class login
+class sell
+class shoppingCart
+class payment
+class clothing
+
+object jacket
+object tShirt
+object boots
+object sneakers
+object hoodies
+object pants
+class user
+
+class dbConnector
+
+homepage --> clothing
+homepage --> recycled
+homepage --> login
+homepage --> shoppingCart
+user o-- sell
+
+shoppingCart o-- payment
+
+clothing --> jacket
+clothing ---> tShirt
+clothing --> boots
+clothing ---> sneakers
+clothing --> hoodies
+clothing ---> pants
+
+login --> user
+
+class clothing {
+ arrayList<items>clothingArray
+
+ String name
+ int ID
+ float price
+ float discountPrice
+ int stock
+ String gender
+ String type
+ String brand
+}
+
+
+
+class shoppingCart {
+    itemID
+    sum
+
+    dbConnector(itemsInCart)
+    removeItem()
+    addItem( ItemID )
+
+}
+
+class login {
+    createAccout()
+    login()
+
+}
+
+class user {
+    int id
+    String name
+    String password
+    String email
+
+    dbConnector(userSaleList)
+    sell()
+}
+
+
+class sell {
+    super
+    regNr
+    accountNr
+}
+
+class payment {
+
+    paymentId
+    userID
+    amount
+}
+
+class recycled {
+    dbConnector(clothingRecycled)
+}
+
+class dbConnector {
+    arrayList<items>clothingRecycled
+    arrayList<items>userSaleList
+    arrayList<items>clothingArray
+    arrayList<items>itemsInCart
+}
+
+@enduml
