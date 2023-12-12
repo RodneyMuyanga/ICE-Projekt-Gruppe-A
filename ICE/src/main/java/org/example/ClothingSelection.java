@@ -67,7 +67,7 @@ public class ClothingSelection {
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                h.homepageMenuDialog();
+                h.backToHomepage();
                 break;
             default:
                 ui.displayMsg("Try again");
@@ -122,7 +122,7 @@ public class ClothingSelection {
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                h.homepageMenuDialog();
+                h.backToHomepage();
                 break;
             default:
                 ui.displayMsg("Try again");
@@ -177,7 +177,7 @@ public void chooseKidsSelection() {
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                h.homepageMenuDialog();
+                h.backToHomepage();
                 break;
             default:
                 ui.displayMsg("Try again");
@@ -232,7 +232,7 @@ public void chooseKidsSelection() {
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                h.homepageMenuDialog();
+                h.backToHomepage();
                 break;
             default:
                 ui.displayMsg("Try again");

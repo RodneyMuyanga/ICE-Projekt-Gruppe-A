@@ -7,6 +7,8 @@ public class Sneakers extends Clothing{
         super(ID, name, price, discountPrice, stock, type, brand, gender);
         this.size = size;
     }
+
+
     @Override
     public String toString(){
         return "Clothing ID: " + ID + " | Name: " + name + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + " | Gender: " + gender;

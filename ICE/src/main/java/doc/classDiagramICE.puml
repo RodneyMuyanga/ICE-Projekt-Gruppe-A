@@ -6,6 +6,7 @@ class Homepage
 class ShoppingCart
 class Payment
 class Clothing
+class ClothingSelection
 
 class Jacket
 class TShirt
@@ -22,6 +23,7 @@ Homepage o--- ManageRecycled
 Homepage o-- ShoppingCart
 Homepage o-- User
 Homepage o-- DBConnector
+Homepage o-- ClothingSelection
 
 ShoppingCart o-- Payment
 
@@ -34,17 +36,21 @@ Clothing ---> Boots
 
 
 class Homepage{
+    ArrayList<String>homeMenu
+    User currentUser
 
+    void homepageMenu()
+    void homepageMenuDialog()
+    void login()
+    void logout()
+    void createAccount()
+    boolean isLoggedIn()
 
-    headerDialog()
-    chooseHeaderOption()
     chooseMenClothing()
     chooseWomenClothing()
     chooseKidsClothing()
     chooseRecycledClothing()
-
-    loginAccount()
-    createAccount()
+    backToHomepage()
 }
 
 class Clothing {
@@ -57,6 +63,15 @@ class Clothing {
  String gender
  String type
  String brand
+}
+
+class ClothingSelection{
+    ArrayList<String>chooseClothingMenu;
+    void chooseClothingMenu()
+    void chooseMenSelection()
+    void chooseWomenSelection()
+    void chooseKidsSelection()
+    void chooseRecycledSelection()
 }
 
 class TShirt{
@@ -127,17 +142,17 @@ class User {
 
 
 class Payment {
+    int paymentId
+    double amount
 
-    paymentId
-    amount
-
-
-    paymentDialog()
+    void paymentDialog()
     if logged in, no detials needed()
     else if not logged in, provide details()
-    displayCart()
-    printReciept()
-    removeStock()
+    void addPaymentDetails()
+    void displayCart()
+    void transactionDialog()
+    void printReciept()
+    void removeStock()
 }
 
 class ManageRecycled {
