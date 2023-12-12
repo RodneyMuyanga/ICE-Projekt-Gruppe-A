@@ -2,6 +2,9 @@ package org.example;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        Homepage homepage = new Homepage();
+        Payment p = new Payment(1,1);
+        p.paymentDialog();
+        //homepage.setup();
     }
 }
