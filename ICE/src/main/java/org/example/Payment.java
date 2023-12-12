@@ -38,6 +38,10 @@ package org.example;
             String inputEmail = ui.getInput("Enter your e-mail");
             String inputAdress = ui.getInput("Enter delivery adress");
 
+            ui.displayMsg("Is the info corect? ");
+
+            System.out.println("Name: " + inputName + "\n  Email:  " + inputEmail + "\n Delivery Adress  " + inputAdress);
+
             String input = "";
             ui.displayMsg("\n Would you like to pay with card? or Mobilepay? ");
             input = ui.getInput("Pres 'C' for card or 'M' for Mobilepay");
@@ -47,29 +51,23 @@ package org.example;
                 while (!(inputRegNr == 4)) {
                     System.out.println("The registration number is incorrect, try again");
                     inputRegNr = Integer.parseInt(ui.getInput("Enter registration number"));
+                }   int inputAccountNr = Integer.parseInt(ui.getInput("Enter account number"));
+                while (!(inputAccountNr ==10)) {
+                    System.out.println("The account number is incorrect, try again");
                 }
-                    int inputAccountNr = Integer.parseInt(ui.getInput("Enter account number"));
-                    if (!(inputAccountNr ==10)){
-                        System.out.println("The account number is incorrect, try again");
-                        inputAccountNr = Integer.parseInt(ui.getInput("Enter registration number"));
-                    }
-                }
-                ui.displayMsg("Is the info corect? ");
-
-                System.out.println("Name: " + inputName + "\n  Email:  " + inputEmail + "\n Delivery Adress  " + inputAdress);
-
-
             } else if (input.equalsIgnoreCase("M")) {
 
                 int phoneNumber = Integer.parseInt(ui.getInput("Enter your phone number, 8 numbers"));
-                if (phoneNumber < 8) {
-                    System.out.println("The phone number does not exist, try again");
-                    phoneNumber = Integer.parseInt(ui.getInput("Enter your phone number with, 8 number"));
+                while (!(phoneNumber == 8)) {
+                    System.out.println("The number does not exist, try again");
+                }
+
+
                 }
 
             }
 
-        }
+
 
 
 

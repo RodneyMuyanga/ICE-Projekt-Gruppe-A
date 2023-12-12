@@ -1,14 +1,14 @@
 package org.example;
+
 import java.util.ArrayList;
 
 public class Homepage {
     private final TextUI ui = new TextUI();
     //private final DBConnector db = new DBConnector();
     private ArrayList<String> homeMenu = new ArrayList<>();
-    private ArrayList<String> menClothingMenu = new ArrayList<>();
+    private ClothingSelection cs = new ClothingSelection();
 
     Homepage() {
-
     }
 
     public void setup() {
@@ -22,7 +22,8 @@ public class Homepage {
         homeMenu.add("[2] Women");
         homeMenu.add("[3] Kids");
         homeMenu.add("[4] Recycled Clothing");
-        homeMenu.add("[5] Login/Create account");
+        homeMenu.add("[5] Login");
+        homeMenu.add("[6] Create account");
     }
 
     public void homepageMenuDialog() {
@@ -36,99 +37,69 @@ public class Homepage {
             case "1":
             case "men":
             case "men clothing":
-                System.out.println("Men clothing");
+                cs.chooseMenSelection();
                 break;
             case "2":
             case "woman":
             case "woman clothing":
-                System.out.println("Woman clothing");
+                cs.chooseWomenSelection();
                 break;
             case "3":
             case "kids":
             case "kids clothing":
-                System.out.println("Kids clothing");
+                cs.chooseKidsSelection();
                 break;
             case "4":
             case "recycled":
             case "recycled clothing":
-                System.out.println("Recycled clothing");
+                cs.chooseRecycledSelection();
                 break;
             case "5":
             case "login":
-            case "logout":
-                System.out.println("Do you want to login or create a new account?");
+                login();
+                break;
+            case "6":
+            case "create account":
+                createAccount();
                 break;
             default:
                 ui.displayMsg("Seems like you made a typo, try again");
-                homepageMenuDialog();
+                backToHomepage();
                 break;
         }
     }
-
-    public void chooseMenMenu() {
-        menClothingMenu.add("All clothes");
-        menClothingMenu.add("Jackets");
-        menClothingMenu.add("Hoodies");
-        menClothingMenu.add("T-shirts");
-        menClothingMenu.add("Pants");
-        menClothingMenu.add("Sneakers");
-        menClothingMenu.add("Boots");
-        menClothingMenu.add("Back");
+    public void backToHomepage(){
+        homepageMenuDialog();
     }
 
-    public void chooseMenSelection() {
-        ui.displayMsg("Men's Clothing Menu:");
-        for (int i = 0; i < menClothingMenu.size(); i++) {
-            ui.displayMsg((i + 1) + ". " + menClothingMenu.get(i));
-        }
-            String response = ui.getInput("");
+    public void login(){
+        String inputUsername = ui.getInput("Enter your username:");
+        String inputPassword = ui.getInput("Enter your password:");
 
-
-            switch (response.toLowerCase()) {
-                case "1":
-                case "all clothes":
-                    ui.displayMsg("Displaying all clothes\n");
-                    System.out.println(db.getClothes);
-                    break;
-                case "2":
-                case "jackets":
-                    ui.displayMsg("Displaying all jackets\n");
-                    chooseMenJackets();
-                    break;
-                case "3":
-                case "hoodies":
-                    ui.displayMsg("Displaying all hoodies\n");
-                    chooseMenHoodies();
-                    break;
-                case "4":
-                case "t-shirts":
-                    ui.displayMsg("Displaying all T-shirts\n");
-                    chooseMenTshirts();
-                    break;
-                case "5":
-                case "pants":
-                    ui.displayMsg("Displaying all pants\n");
-                    chooseMenPants();
-                    break;
-                case "6":
-                case "sneakers":
-                    ui.displayMsg("Displaying all sneakers\n");
-                    chooseMenSneakers();
-                    break;
-                case "7":
-                case "boots":
-                    ui.displayMsg("Displaying all boots\n");
-                    chooseMenBoots();
-                    break;
-                case "8":
-                case "back":
-                    ui.displayMsg("Returning back to the homemenu...");
-                    homepageMenuDialog();
-                    break;
-                default:
-                    ui.displayMsg("Try again");
-                    chooseMenSelection();
+        for (User user : db.userList) {
+            if (user.getUsername().equals(inputUsername) && user.getPassword().equals(inputPassword)) {
+                ui.displayMsg("");
+                userName2 = inputUserName;
+                System.out.println("Welcome " + userName2);
+                homepageMenuDialog();
+                return;
             }
         }
+        ui.displayMsg("");
+        System.out.println("Invalid username or password. Please try again.");
+        loginAccount();
+    }
+
+
+    public void createAccount() {
+        String newUsername = ui.getInput("Enter a new username:");
+        String newPassword = ui.getInput("Enter a new password:");
+
+        ui.displayMsg("");
+        db.saveUserData(newUsername, newPassword);
+        ui.displayMsg("New user created successfully");
+        db.readUserData();
+        login();
     }
 }
+
