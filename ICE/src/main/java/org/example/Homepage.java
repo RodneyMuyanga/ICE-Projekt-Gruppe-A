@@ -2,20 +2,18 @@ package org.example;
 
 import java.util.ArrayList;
 
-import static java.lang.System.exit;
-
 public class Homepage {
     private final TextUI ui = new TextUI();
-    //private final DBConnector db = new DBConnector();
+    private final ShoppingCart cart = new ShoppingCart();
+    private final DBConnector db = new DBConnector();
     private ArrayList<String> homeMenu = new ArrayList<>();
+    private ArrayList<String> selectClothesOrNotMenu = new ArrayList<>();
     private ClothingSelection cs = new ClothingSelection();
     private User currentUser;
 
-    Homepage() {
-
-    }
-
     public void setup() {
+        db.readAllData();
+        ui.displayMsg("Welcome to Renewed Couture GangGang Corner\n");
         homepageMenu();
         homepageMenuDialog();
         //chooseMenMenu();
@@ -30,8 +28,16 @@ public class Homepage {
         homeMenu.add("[6] Create account");
     }
 
+    public void selectClothesOrNotMenu() { // extra filter brands
+        if (selectClothesOrNotMenu.size() != 2) {
+            selectClothesOrNotMenu.add("[1] Select clothes");
+            selectClothesOrNotMenu.add("[2] Back");
+        }
+    }
+
+
     public void homepageMenuDialog() {
-        ui.displayMsg("Welcome to Renewed Couture GangGang Corner\n Choose a category");
+        ui.displayMsg("Choose a category");
         for (int i = 0; i < homeMenu.size(); i++) {
             ui.displayMsg(homeMenu.get(i));
         }
@@ -42,22 +48,26 @@ public class Homepage {
                 case "1":
                 case "men":
                 case "men clothing":
-                    //cs.chooseMenSelection();
+                    cs.chooseMenSelection();
+                    //selectClothesOrNotDialogQuestionMark();
                     break;
                 case "2":
                 case "woman":
                 case "woman clothing":
                     //cs.chooseWomenSelection();
+                    //selectClothesOrNotDialogQuestionMark();
                     break;
                 case "3":
                 case "kids":
                 case "kids clothing":
                     //cs.chooseKidsSelection();
+                    //selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
                     //cs.chooseRecycledSelection();
+                    //selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
                 case "login":
@@ -68,7 +78,7 @@ public class Homepage {
                     //createAccount();
                     break;
                 default:
-                    ui.displayMsg("Seems like you made a typo, try again");
+                    ui.displayMsg("Seems like you made a typo, try again\n");
                     backToHomepage();
                     break;
             }
@@ -77,36 +87,84 @@ public class Homepage {
                 case "1":
                 case "men":
                 case "men clothing":
-                    //cs.chooseMenSelection();
-                    System.out.println("men");
+                    cs.chooseMenSelection();
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "2":
                 case "woman":
                 case "woman clothing":
                     //cs.chooseWomenSelection();
-                    System.out.println("women");
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "3":
                 case "kids":
                 case "kids clothing":
                     //cs.chooseKidsSelection();
-                    System.out.println("kids");
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
                     //cs.chooseRecycledSelection();
-                    System.out.println("recycled");
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
                 case "logout":
                     logout();
                     break;
                 default:
-                    ui.displayMsg("Seems like you made a typo, try again");
+                    ui.displayMsg("Seems like you made a typo, try again\n");
                     backToHomepage();
                     break;
             }
+        }
+    }
+
+    private void selectClothesOrNotDialogQuestionMark() {
+        selectClothesOrNotMenu();
+        ui.displayMsg("Choose a category");
+        for (int i = 0; i < selectClothesOrNotMenu.size(); i++) {
+            ui.displayMsg(selectClothesOrNotMenu.get(i));
+        }
+        String response = ui.getInput("");
+
+        switch (response.toLowerCase()) {
+            case "1":
+            case "select":
+            case "select clothes":
+                selectClothesDialog(cs.getChosenClothes());
+                break;
+            case "2":
+            case "back":
+                homepageMenuDialog();
+                break;
+            default:
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                selectClothesOrNotDialogQuestionMark();
+                break;
+        }
+    }
+
+    private void selectClothesDialog(ArrayList<Clothing> clothing) {
+        String selectID = ui.getInput("Type the ID-number of the clothes you want to add to your basket. Finish with 'Q'");
+
+        boolean found = false;
+
+        for (Clothing c : clothing) {
+
+            if (Integer.parseInt(selectID) == c.getID()) {
+                cart.getItemsInCart().add(c);
+                System.out.println(c + " has been added to cart");
+                found = true;
+                break;
+            } else if (selectID.equalsIgnoreCase("Q")) {
+                //move on to payment
+                System.out.println("moving on to payment...");
+            }
+        }
+        if (!found) {
+            ui.displayMsg("Invalid ID. Please try again");
+            selectClothesDialog(clothing);
         }
     }
 
@@ -114,7 +172,7 @@ public class Homepage {
         homepageMenuDialog();
     }
 
-    public void login() {
+/*    public void login() {
         String inputUsername = ui.getInput("Enter your username:");
         String inputPassword = ui.getInput("Enter your password:");
 
@@ -132,10 +190,10 @@ public class Homepage {
         ui.displayMsg("");
         System.out.println("Invalid username or password. Please try again.");
         login();
-    }
+    }*/
 
 
-    public void createAccount() {
+    /*public void createAccount() {
         String newUsername = ui.getInput("Enter a new username:");
         String newPassword = ui.getInput("Enter a new password:");
 
@@ -144,9 +202,9 @@ public class Homepage {
         ui.displayMsg("New user created successfully");
         db.readUserData();
         login();
-    }
+    }*/
 
-    public void logout(){
+    public void logout() {
     }
 
     public boolean isLoggedIn() {

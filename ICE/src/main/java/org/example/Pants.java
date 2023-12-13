@@ -1,14 +1,13 @@
 package org.example;
 
 public class Pants extends Clothing{
-    protected int size;
+    protected String size;
 
-    public Pants(int ID, String name, float price, float discountPrice, int stock, String type, String brand, String gender, int size) {
-        super(ID, name, price, discountPrice, stock, type, brand, gender);
+    public Pants(int ID, int price, int discountPrice, int stock, String type, String brand, String gender, String size, String color, String model) {
+        super(ID, price, discountPrice, stock, type, brand, gender, color, model);
         this.size = size;
     }
     @Override
     public String toString(){
-        return "Clothing ID: " + ID + " | Name: " + name + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + " | Gender: " + gender;
-    }
+        return "Clothing ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + "Model: " + model + " | Gender: " + gender + " | Color: " + color;    }
 }

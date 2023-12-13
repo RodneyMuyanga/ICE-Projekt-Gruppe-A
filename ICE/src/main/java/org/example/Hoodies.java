@@ -1,18 +1,20 @@
 package org.example;
-public class Hoodies extends Clothing{
+public class Hoodies extends Clothing {
     protected String size;
 
-    public Hoodies(int ID, String name, float price, float discountPrice, int stock, String type, String brand, String gender, String size){
-        super(ID, name, price, discountPrice, stock, type, brand, gender);
+    public Hoodies(int ID, int price, int discountPrice, int stock, String type, String brand, String gender, String size, String color, String model) {
+        super(ID, price, discountPrice, stock, type, brand, gender, color, model);
         this.size = size;
     }
 
-    public String getSize(){
+    public String getSize() {
         return size;
     }
-@Override
-    public String toString(){
-        return "Clothing ID: " + ID + " | Name: " + name + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + " | Gender: " + gender;
+
+    @Override
+    public String toString() {
+        return "Clothing ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + "Model: " + model + " | Gender: " + gender + " | Color: " + color;
     }
 }
+
 
