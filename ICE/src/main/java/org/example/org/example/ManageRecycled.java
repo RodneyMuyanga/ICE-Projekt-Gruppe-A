@@ -109,7 +109,6 @@ public class ManageRecycled {
     public void receiptAndTransactionDialog() {
 
 
-
     }
 }
 
