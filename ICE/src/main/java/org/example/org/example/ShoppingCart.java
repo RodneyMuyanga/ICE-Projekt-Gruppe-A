@@ -1,6 +1,5 @@
 package org.example;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ShoppingCart {
@@ -19,29 +18,36 @@ public class ShoppingCart {
     }
 
     private void displayCart(){
-        ui.displayMsg("This is your cart:");
-        for (int i = 0 ; i < itemsInCart.size() ; i++ ){
-            System.out.println(itemsInCart);
+        for (Clothing clothing : itemsInCart){
+            System.out.println((clothing));
+        /*for (int i = 0 ; i < itemsInCart.size() ; i++ ){
+            System.out.println(itemsInCart);*/
         }
     }
 
-    public void homepageMenu() {
+    public void shoppingMenu() {
         if ( ShoppingCartMenu.size() != 3){
             ShoppingCartMenu.add("[1] Checkout");
             ShoppingCartMenu.add("[2] Shop more");
             ShoppingCartMenu.add("[3] Remove items");
         }
+        for (String i : ShoppingCartMenu){
+            System.out.println(i);
+        }
     }
 
     public void CartDialog(){
-
-        for (String shoppingCartMenu : ShoppingCartMenu) {
-            ui.displayMsg(shoppingCartMenu);
-        }
-        ui.displayMsg("Total: " + sum);
-        String input = "";
-        input = ui.getInput("Would you like to continue shopping?");
+        ui.displayMsg("Your cart: ");
+        displayCart();
+        ui.displayMsg("Total: " + getTotalPrice() + "$");
         ui.displayMsg("");
+
+        String input = "";
+        ui.displayMsg("Would you like to continue shopping?");
+        ui.displayMsg("");
+        shoppingMenu();
+        input = ui.getInput("");
+
 
         switch (input.toLowerCase()) {
             case "1":
@@ -65,9 +71,17 @@ public class ShoppingCart {
         }
     }
 
+    public int getTotalPrice(){
+        int total = 0;
+        for (Clothing c : itemsInCart){
+            total += c.price;
+        }
+        return total;
+    }
+
     public void paymentDialog() {
         String input = "";
-        ui.displayMsg("\nWould you like to Login or register payment information? ");
+        ui.displayMsg("Would you like to Login or register payment information? ");
 
         input = ui.getInput("Press 'L' for Login or 'R' to add payment information");
         ui.displayMsg(" ");
@@ -94,10 +108,12 @@ public class ShoppingCart {
         String inputEmail = ui.getInput("Enter your e-mail");
         String inputAddress = ui.getInput("Enter delivery adress");
 
+        ui.displayMsg("");
         ui.displayMsg("Is the info correct? ");
+        ui.displayMsg("");
+        System.out.println(" Name: " + inputName + "\n Email:  " + inputEmail + "\n Delivery Address  " + inputAddress);
 
-        System.out.println("Name: " + inputName + "\n  Email:  " + inputEmail + "\n Delivery Address  " + inputAddress);
-
+        ui.displayMsg("");
         String correction = "";
         correction = ui.getInput("Pres 'Y' for yes and 'N' for no");
 

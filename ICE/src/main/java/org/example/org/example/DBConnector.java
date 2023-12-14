@@ -8,7 +8,7 @@ public class DBConnector {
     //mysql:mysql-connector-java:RELEASE
     static final String DB_URL = "jdbc:mysql://localhost:3306/clothing";
     static final String USER = "root";
-    static final String PASS = "Teknologisk2023!";
+    static final String PASS = "Ch@d1234";
     //-------------MEN---------------//
     protected final ArrayList<Clothing> bootsForMen;
     protected final ArrayList<Clothing> hoodiesForMen;
@@ -35,6 +35,10 @@ public class DBConnector {
     protected final ArrayList<Clothing> allWomenClothes;
     protected final ArrayList<Clothing> allKidsClothes;
     protected final ArrayList<Clothing> allClothes;
+    protected final ArrayList<Clothing> allRecycledClothes;
+    //-------------USER---------------//
+    protected ArrayList<User> guestUser;
+    protected ArrayList<Clothing> RecyclingClothes;
 
 
     public DBConnector() {
@@ -64,6 +68,9 @@ public class DBConnector {
         this.allWomenClothes = new ArrayList<>();
         this.allKidsClothes = new ArrayList<>();
         this.allClothes = new ArrayList<>();
+        this.allRecycledClothes = new ArrayList<>();
+        //-------------USER---------------//
+        this.guestUser = new ArrayList<>();
     }
 
     public void readMenBoots() {
@@ -243,7 +250,7 @@ public class DBConnector {
                 String model = rs.getString("model");
                 String color = rs.getString("color");
 
-                Pants pants = new Pants(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                Pants pants = new Pants(id, price, discountPrice, stock, type, brand, genderResult, size, color, model);
                 pantsForMen.add(pants);
                 allMenClothes.add(pants);
                 allClothes.add(pants);
@@ -293,7 +300,7 @@ public class DBConnector {
                 String model = rs.getString("model");
                 String color = rs.getString("color");
 
-                Sneakers sneakers = new Sneakers(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                Sneakers sneakers = new Sneakers(id, price, discountPrice,stock, type, brand, genderResult, size, color, model);
                 sneakersForMen.add(sneakers);
                 allMenClothes.add(sneakers);
                 allClothes.add(sneakers);

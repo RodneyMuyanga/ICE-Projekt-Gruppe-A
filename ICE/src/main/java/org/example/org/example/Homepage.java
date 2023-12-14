@@ -16,6 +16,8 @@ public class Homepage {
         ui.displayMsg("Welcome to Renewed Couture GangGang Corner\n");
         homepageMenu();
         homepageMenuDialog();
+        //ManageRecycled manageRecycled = new ManageRecycled(90, "type", "brand", "gender", "color");
+        //manageRecycled.sellingDialog();
         //chooseMenMenu();
     }
 
