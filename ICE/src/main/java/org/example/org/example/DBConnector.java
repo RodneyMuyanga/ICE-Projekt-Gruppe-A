@@ -73,6 +73,92 @@ public class DBConnector {
         this.guestUser = new ArrayList<>();
     }
 
+    public void readRecycledClothes() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM recycledclothing";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String brand = rs.getString("brand");
+                String model = rs.getString("model");
+                String gender = rs.getString("gender");
+                String size = rs.getString("size");
+                String color = rs.getString("color");
+                int price = rs.getInt("price");
+
+                Clothing recycledClothing = new Clothing(brand, model,  gender,  size, color, price);
+                allRecycledClothes.add(recycledClothing);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    public ArrayList<Clothing> getAllRecycledClothes(){
+        return allRecycledClothes;
+    }
+
+    public void saveRecycledClothes(String brand, String model, String gender, String size, String color, int price) {
+        //Users userData = new Users();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //System.out.println("Connecting do database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO recycledclothing (brand, model, gender, size, color, price) VALUES(?,?,?,?,?,?)";
+            stmt = conn.prepareStatement((sql));
+
+            int ID = 0;
+            stmt.setString(1,brand);
+            stmt.setString(2,model);
+            stmt.setString(3,gender);
+            stmt.setString(4,size);
+            stmt.setString(5,color);
+            stmt.setInt(6,price);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+
     public void readMenBoots() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -121,9 +207,11 @@ public class DBConnector {
             }
         }
     }
+
     public ArrayList<Clothing> getBootsForMen() {
         return bootsForMen;
     }
+
     public void readMenHoodies() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -174,6 +262,7 @@ public class DBConnector {
     public ArrayList<Clothing> getHoodiesForMen() {
         return hoodiesForMen;
     }
+
     public void readMenJackets() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -224,6 +313,7 @@ public class DBConnector {
     public ArrayList<Clothing> getJacketsForMen() {
         return jacketsForMen;
     }
+
     public void readMenPants() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -274,6 +364,7 @@ public class DBConnector {
     public ArrayList<Clothing> getPantsForMen() {
         return pantsForMen;
     }
+
     public void readMenSneakers() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -324,6 +415,7 @@ public class DBConnector {
     public ArrayList<Clothing> getSneakersForMen() {
         return sneakersForMen;
     }
+
     public void readMenTshirts() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -371,9 +463,11 @@ public class DBConnector {
             }
         }
     }
+
     public ArrayList<Clothing> getTshirtsForMen() {
         return tshirtsForMen;
     }
+
     public void readBootsForKids() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -422,9 +516,11 @@ public class DBConnector {
             }
         }
     }
+
     public ArrayList<Clothing> getBootsForKids() {
         return bootsForKids;
     }
+
     public void readHoodiesForKids() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -472,9 +568,11 @@ public class DBConnector {
             }
         }
     }
+
     public ArrayList<Clothing> getHoodiesForKids() {
         return hoodiesForKids;
     }
+
     public void readJacketsForKids() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -522,9 +620,11 @@ public class DBConnector {
             }
         }
     }
+
     public ArrayList<Clothing> getJacketsForKids() {
         return jacketsForKids;
     }
+
     public void readPantsForKids() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -572,13 +672,119 @@ public class DBConnector {
             }
         }
     }
+
+
+    public void readTshirtForKids() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM tshirt WHERE size = 'S' OR size = 'XS'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                String size = rs.getString("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Tshirt tshirtKids = new Tshirt(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                tshirtsForKids.add(tshirtKids);
+                allKidsClothes.add(tshirtKids);
+                allClothes.add(tshirtKids);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    public void readSneakersForKids() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM sneakers WHERE size = '7'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                int size = rs.getInt("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Sneakers sneakersKids = new Sneakers(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                sneakersForKids.add(sneakersKids);
+                allKidsClothes.add(sneakersKids);
+                allClothes.add(sneakersKids);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+
     public ArrayList<Clothing> getPantsForKids() {
         return pantsForKids;
+    }
+    public ArrayList<Clothing> getTshirtsForKids() {
+        return tshirtsForKids;
+    }
+    public ArrayList<Clothing> getSneakersForKids() {
+        return sneakersForKids;
     }
 
     public ArrayList<Clothing> getAllMenClothes() {
         return allMenClothes;
     }
+
     public ArrayList<Clothing> getAllKidsClothes() {
         return allKidsClothes;
     }
@@ -589,11 +795,6 @@ public class DBConnector {
 
     public ArrayList<Clothing> getAllClothes() {
         return allClothes;
-    }
-
-
-    public void saveRecyledData(String inputType, String inputBrand, String inputGender, String inputColor) {
-        // lav en metode der kan gemme genbrugstøjet
     }
 
     public void readAllData(){
@@ -607,5 +808,14 @@ public class DBConnector {
         //-----Women-----//
 
         //-----Kids-----//
+        readBootsForKids();
+        readJacketsForKids();
+        readHoodiesForKids();
+        readPantsForKids();
+        readTshirtForKids();
+        readSneakersForKids();
+
+        readRecycledClothes();
+
     }
 }

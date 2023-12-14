@@ -5,6 +5,8 @@ public class Main {
         Homepage homepage = new Homepage();
         //Payment p = new Payment(1,1);
         //p.paymentDialog();
+
+
         homepage.setup();
     }
 }

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 public class ShoppingCart {
     private final TextUI ui = new TextUI();
-    private final ArrayList<Clothing> itemsInCart = new ArrayList<>();
+    private final DBConnector db = new DBConnector();
+    protected ArrayList<Clothing> itemsInCart = new ArrayList<>();
     private final ArrayList<String>ShoppingCartMenu = new ArrayList<>();
     private int paymentID;
     private double amount;
-    private float sum;
-    private String dummy;
-    private Payment payment;
     private Homepage homepage;
 
     public ArrayList<Clothing> getItemsInCart() {
@@ -80,6 +78,10 @@ public class ShoppingCart {
     }
 
     public void paymentDialog() {
+        displayCart();
+        ui.displayMsg("\nYour total is: " + getTotalPrice() + "$\n");
+
+
         String input = "";
         ui.displayMsg("Would you like to Login or register payment information? ");
 
@@ -89,22 +91,22 @@ public class ShoppingCart {
             addPaymentDetails();
         }
         else {
-            //get.UserInfo
         }
         // Perform the transaction
         ui.displayMsg("\n Verifying card or number");
         ui.displayMsg("");
 
-        ui.displayMsg("Congratulations, your payment have been approved. Here is your receipt: " + itemsInCart + sum +" $");
+        ui.displayMsg("Congratulations, your payment have been approved. \nHere is your receipt:");
+        displayCart();
+        ui.displayMsg("Total: " + getTotalPrice() + "$\n");
+
 
         removeStock();
         clearCart();
-
     }
 
     private void addPaymentDetails() {
-        String inputName = ui.getInput("Enter your username:");
-        String inputPassword = ui.getInput("Enter your password:");
+        String inputName = ui.getInput("Enter your Name:");
         String inputEmail = ui.getInput("Enter your e-mail");
         String inputAddress = ui.getInput("Enter delivery adress");
 
@@ -118,11 +120,16 @@ public class ShoppingCart {
         correction = ui.getInput("Pres 'Y' for yes and 'N' for no");
 
         if (correction.equalsIgnoreCase("Y")) {
+            User user = new User(inputName, inputEmail, inputAddress);
+            db.guestUser.add(user);
             System.out.println("Super! Moving on to the payment");
         } else {
             System.out.println("Lets try again");
             addPaymentDetails();
+
         }
+
+
         String input = "";
         ui.displayMsg("\n Would you like to pay with card? or Mobilepay? ");
         input = ui.getInput("Pres 'C' for card or 'M' for Mobilepay");
@@ -157,14 +164,17 @@ public class ShoppingCart {
 
 
     private void removeStock() {
+
+
     }
     private void addItem(Clothing clothing){
         itemsInCart.add(clothing);
     }
+
     private void removeItem(){
-        String reponse = ui.getInput("Name the item you want removed");
-        if (itemsInCart.contains(reponse)) {
-            //itemsInCart.remove();
+        String response = ui.getInput("Name the item you want removed");
+        if (itemsInCart.contains(response)) {
+            //itemsInCart.remove(response);
         }
     }
 

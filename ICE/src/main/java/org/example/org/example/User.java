@@ -23,7 +23,7 @@ public class User {
         this.accountNr = accountNr;
     }
 
-    public User(int id, String username, String email, String address) {
+    public User( String username, String email, String address) {
         this.username = username;
         this.email = email;
         this.address = address;

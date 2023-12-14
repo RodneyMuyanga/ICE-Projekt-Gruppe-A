@@ -51,7 +51,7 @@ public class Homepage {
                 case "men":
                 case "men clothing":
                     cs.chooseMenSelection();
-                    //selectClothesOrNotDialogQuestionMark();
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "2":
                 case "woman":
@@ -62,14 +62,14 @@ public class Homepage {
                 case "3":
                 case "kids":
                 case "kids clothing":
-                    //cs.chooseKidsSelection();
-                    //selectClothesOrNotDialogQuestionMark();
+                    cs.chooseKidsSelection();
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
-                    //cs.chooseRecycledSelection();
-                    //selectClothesOrNotDialogQuestionMark();
+                    cs.chooseRecycledSelection();
+                    selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
                 case "login":
@@ -81,7 +81,7 @@ public class Homepage {
                     break;
                 default:
                     ui.displayMsg("Seems like you made a typo, try again\n");
-                    backToHomepage();
+                    homepageMenuDialog();
                     break;
             }
         } else {
@@ -96,18 +96,18 @@ public class Homepage {
                 case "woman":
                 case "woman clothing":
                     //cs.chooseWomenSelection();
-                    selectClothesOrNotDialogQuestionMark();
+                    //selectClothesOrNotDialogQuestionMark();
                     break;
                 case "3":
                 case "kids":
                 case "kids clothing":
-                    //cs.chooseKidsSelection();
+                    cs.chooseKidsSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
-                    //cs.chooseRecycledSelection();
+                    cs.chooseRecycledSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
@@ -116,7 +116,7 @@ public class Homepage {
                     break;
                 default:
                     ui.displayMsg("Seems like you made a typo, try again\n");
-                    backToHomepage();
+                    homepageMenuDialog();
                     break;
             }
         }
@@ -148,30 +148,64 @@ public class Homepage {
     }
 
     private void selectClothesDialog(ArrayList<Clothing> clothing) {
-        String selectID = ui.getInput("Type the ID-number of the clothes you want to add to your basket. Finish with 'Q'");
+        String userInput = ui.getInput("Type the ID-number of the clothes you want to add to your cart\nPress X to return to the previous menu");
+
+        if (userInput.equalsIgnoreCase("X")){
+            homepageMenuDialog();
+            return;
+        }
+
+        int selectID;
+        try {
+            selectID = Integer.parseInt(userInput);
+        } catch (NumberFormatException e){
+            ui.displayMsg("Invalid input. Please enter a valid ID or 'X' to return to the previous menu");
+            selectClothesDialog(clothing);
+            return;
+        }
 
         boolean found = false;
 
         for (Clothing c : clothing) {
+            if (selectID == c.getID()) {
+                if (c.stock > 0) {
+                    int amount = ui.getNumericInput("How many would you like to add to cart? There are currently " + c.getStock() + " amount in stock");
 
-            if (Integer.parseInt(selectID) == c.getID()) {
-                cart.getItemsInCart().add(c);
-                System.out.println(c + " has been added to cart");
-                found = true;
-                break;
-            } else if (selectID.equalsIgnoreCase("Q")) {
-                //move on to payment
-                System.out.println("moving on to payment...");
+                    if (amount <= c.stock) {
+                        for (int i = 0; i < amount; i++) {
+                            cart.itemsInCart.add(c);
+                        }
+                        c.stock -= amount;
+                        ui.displayMsg(amount + " amount of " + c.getBrand() + " " + c.getModel() + " has been added to cart\n");
+                        found = true;
+
+                        String choice = ui.getInput("[1] Continue shopping\n[2] Continue to payment\n");
+                        if (choice.equalsIgnoreCase("1") || choice.equalsIgnoreCase("shop")) {
+                            ui.displayMsg("Returning back to the menu...\n");
+                            homepageMenuDialog();
+                        } else if (choice.equalsIgnoreCase("2") || choice.equalsIgnoreCase("payment")) {
+                            cart.CartDialog();
+                        } else {
+                            ui.displayMsg("Seems like you made a typo, try again");
+                            selectClothesDialog(clothing);
+                        }
+                    } else {
+                        ui.displayMsg("Please try again");
+                        selectClothesDialog(clothing);
+                    }
+                } else if (selectID == c.getID() && c.stock <= 0) {
+                    ui.displayMsg("This product is currently out of stock. Please try again");
+                    selectClothesDialog(clothing);
+                }
             }
+        }
+        if (String.valueOf(selectID).equalsIgnoreCase("X")) {
+            cart.paymentDialog();
         }
         if (!found) {
             ui.displayMsg("Invalid ID. Please try again");
             selectClothesDialog(clothing);
         }
-    }
-
-    public void backToHomepage() {
-        homepageMenuDialog();
     }
 
 /*    public void login() {
@@ -217,4 +251,5 @@ public class Homepage {
         }
     }
 }
+
 
