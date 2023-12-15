@@ -24,15 +24,6 @@ public class Clothing {
         this.model = model;
     }
 
-    public Clothing(String brand,String model, String gender, String size, String color, int price){
-        this.brand = brand;
-        this.model = model;
-        this.gender = gender;
-        this.size = size;
-        this.color= color;
-
-    }
-
     public int getID() {
         return ID;
     }
@@ -67,4 +58,5 @@ public class Clothing {
     public String toString(){
         return "Clothing ID: " + ID + " | Price: " + price + "$" + " | Discount price (if discount=true): " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color;
     }
+
 }

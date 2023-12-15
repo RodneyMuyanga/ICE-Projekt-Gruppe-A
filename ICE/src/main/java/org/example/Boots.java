@@ -8,7 +8,7 @@ public class Boots extends Clothing{
     }
     @Override
     public String toString(){
-        return "Clothing ID: " + ID + " | Price: " + price + "$" + " | Discount price (if discount=true): " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color;
+        return "Boots ID: " + ID + " | Price: " + price + "$" + " | Discount price (if discount=true): " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color;
 
     }
 }

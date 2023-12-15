@@ -1,6 +1,4 @@
 package org.example;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class User {
     private int id;
@@ -22,11 +20,17 @@ public class User {
         this.regNr = regNr;
         this.accountNr = accountNr;
     }
-
-    public User( String username, String email, String address) {
+    public User(String username, String email, String address) {
         this.username = username;
         this.email = email;
         this.address = address;
+    }
+
+    public User(String username, String password, String email, String address, int regNr, int accountNr) {
+    }
+
+    public User(String username, String password, String email, String address) {
+
     }
 
     public int getId() {

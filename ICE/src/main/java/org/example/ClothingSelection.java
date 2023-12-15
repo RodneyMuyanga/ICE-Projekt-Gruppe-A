@@ -11,7 +11,6 @@ public class ClothingSelection {
 
     public ClothingSelection() {
     }
-
     public void chooseClothingMenu() {
         if (chooseClothingMenu.size() != 8) {
             chooseClothingMenu.add("[1] All clothes");
@@ -24,14 +23,12 @@ public class ClothingSelection {
             chooseClothingMenu.add("[8] Back");
         }
     }
-
     public void chooseRecycledClothingMenu(){
         if(chooseRecycledClothingMenu.size() !=2){
             chooseRecycledClothingMenu.add("[1] All clothes");
             chooseRecycledClothingMenu.add("[2] Back");
         }
     }
-
     public ArrayList<Clothing> chooseMenSelection() {
         chooseClothingMenu();
         ui.displayMsg("Men's Clothing Menu:\n");
@@ -99,7 +96,6 @@ public class ClothingSelection {
                 }
                 ui.displayMsg("");
                 return this.chosenClothes = db.getSneakersForMen();
-            //break;
             case "7":
             case "boots":
                 ui.displayMsg("Displaying all boots\n");
@@ -109,7 +105,6 @@ public class ClothingSelection {
                 }
                 ui.displayMsg("");
                 return this.chosenClothes = db.getBootsForMen();
-            //break;
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
@@ -117,68 +112,93 @@ public class ClothingSelection {
             default:
                 ui.displayMsg("Seems like you made a typo, try again\n");
                 ui.displayMsg("");
-                chooseMenSelection();
-                break;
+                return chooseMenSelection();
         }
         return null;
     }
 
-
-    /*public void chooseWomenSelection() {
+    public ArrayList<Clothing> chooseWomenSelection() {
         ui.displayMsg("Women's Clothing Menu:");
         for (int i = 0; i < chooseClothingMenu.size(); i++) {
             ui.displayMsg((i + 1) + ". " + chooseClothingMenu.get(i));
         }
         String response = ui.getInput("");
 
-
         switch (response.toLowerCase()) {
             case "1":
             case "all clothes":
-                ui.displayMsg("Displaying all clothes\n");
-                System.out.println(db.getWomenClothes);
-                break;
+                ui.displayMsg("Displaying all boots\n");
+                db.readAllData();
+                for (Clothing clothing : db.getAllWomenClothes()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getAllWomenClothes();
             case "2":
             case "jackets":
                 ui.displayMsg("Displaying all jackets\n");
-                db.getWomenJackets();
-                break;
+                db.readWomenJackets();
+                for (Clothing clothing : db.getJacketsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getJacketsForWomen();
             case "3":
             case "hoodies":
                 ui.displayMsg("Displaying all hoodies\n");
-                db.getWomenHoodies();
-                break;
+                db.readWomenHoodies();
+                for (Clothing clothing : db.getHoodiesForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getHoodiesForWomen();
             case "4":
             case "t-shirts":
-                ui.displayMsg("Displaying all T-shirts\n");
-                db.getWomenTshirts();
-                break;
+                ui.displayMsg("Displaying all t-shirts\n");
+                db.readWomenTshirts();
+                for (Clothing clothing : db.getTshirtsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getTshirtsForWomen();
             case "5":
             case "pants":
                 ui.displayMsg("Displaying all pants\n");
-                db.getWomenPants();
-                break;
+                db.readWomenPants();
+                for (Clothing clothing : db.getPantsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getPantsForWomen();
             case "6":
             case "sneakers":
                 ui.displayMsg("Displaying all sneakers\n");
-                db.getWomenSneakers();
-                break;
+                db.readWomenSneakers();
+                for (Clothing clothing : db.getSneakersForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getSneakersForWomen();
             case "7":
             case "boots":
                 ui.displayMsg("Displaying all boots\n");
-                db.getWomenBoots();
-                break;
+                db.readWomenBoots();
+                for (Clothing clothing : db.getBootsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getBootsForWomen();
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                h.backToHomepage();
                 break;
             default:
-                ui.displayMsg("Try again");
-                chooseWomenSelection();
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                ui.displayMsg("");
+                return chooseWomenSelection();
         }
-    }*/
-
+        return null;
+    }
 
     public ArrayList<Clothing> chooseKidsSelection() {
         ui.displayMsg("Kids Clothing Menu:\n");
@@ -191,6 +211,7 @@ public class ClothingSelection {
             case "1":
             case "all clothes":
                 ui.displayMsg("Displaying all clothes\n");
+                db.readAllData();
                 for (Clothing clothing : db.getAllKidsClothes()) {
                     System.out.println((clothing));
                 }
@@ -199,6 +220,7 @@ public class ClothingSelection {
             case "2":
             case "jackets":
                 ui.displayMsg("Displaying all jackets\n");
+                db.readJacketsForKids();
                 for (Clothing clothing : db.getJacketsForKids()) {
                     System.out.println((clothing));
                 }
@@ -207,6 +229,7 @@ public class ClothingSelection {
             case "3":
             case "hoodies":
                 ui.displayMsg("Displaying all hoodies\n");
+                db.readHoodiesForKids();
                 for (Clothing clothing : db.getHoodiesForKids()) {
                     System.out.println((clothing));
                 }
@@ -215,6 +238,7 @@ public class ClothingSelection {
             case "4":
             case "t-shirts":
                 ui.displayMsg("Displaying all t-shirts\n");
+                db.readTshirtForKids();
                 for (Clothing clothing : db.getTshirtsForKids()) {
                     System.out.println((clothing));
                 }
@@ -223,6 +247,7 @@ public class ClothingSelection {
             case "5":
             case "pants":
                 ui.displayMsg("Displaying all pants\n");
+                db.readPantsForKids();
                 for (Clothing clothing : db.getPantsForKids()) {
                     System.out.println((clothing));
                 }
@@ -231,14 +256,16 @@ public class ClothingSelection {
             case "6":
             case "sneakers":
                 ui.displayMsg("Displaying all sneakers\n");
+                db.readSneakersForKids();
                 for (Clothing clothing : db.getSneakersForKids()) {
-                    System.out.println((clothing));
+                    System.out.println(clothing);
                 }
                 ui.displayMsg("");
                 return this.chosenClothes = db.getSneakersForKids();
             case "7":
             case "boots":
                 ui.displayMsg("Displaying all boots\n");
+                db.readBootsForKids();
                 for (Clothing clothing : db.getBootsForKids()) {
                     System.out.println((clothing));
                 }
@@ -249,8 +276,9 @@ public class ClothingSelection {
                 ui.displayMsg("Returning back to the home-menu...");
                 break;
             default:
-                ui.displayMsg("Try again");
-                chooseKidsSelection();
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                ui.displayMsg("");
+                return chooseKidsSelection();
         }
         return null;
     }
@@ -284,7 +312,6 @@ public class ClothingSelection {
         }
         return null;
     }
-
     public ArrayList<Clothing> getChosenClothes() {
         return chosenClothes;
     }

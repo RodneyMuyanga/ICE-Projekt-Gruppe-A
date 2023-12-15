@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ShoppingCart {
     private final TextUI ui = new TextUI();
@@ -18,8 +19,6 @@ public class ShoppingCart {
     private void displayCart(){
         for (Clothing clothing : itemsInCart){
             System.out.println((clothing));
-        /*for (int i = 0 ; i < itemsInCart.size() ; i++ ){
-            System.out.println(itemsInCart);*/
         }
     }
 
@@ -166,15 +165,24 @@ public class ShoppingCart {
     private void removeStock() {
 
 
+
     }
     private void addItem(Clothing clothing){
         itemsInCart.add(clothing);
     }
 
+    
+
     private void removeItem(){
-        String response = ui.getInput("Name the item you want removed");
-        if (itemsInCart.contains(response)) {
-            //itemsInCart.remove(response);
+        //String response = ui.getInput("Name the item you want removed");
+        int response = ui.getNumericInput("Type the ID of the item you want removed");
+        Iterator<Clothing> iterator = itemsInCart.iterator();
+
+        while (iterator.hasNext()){
+            Clothing clothing = iterator.next();
+            if(clothing.getID() == response){
+                iterator.remove();
+            }
         }
     }
 

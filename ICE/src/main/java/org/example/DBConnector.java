@@ -9,6 +9,10 @@ public class DBConnector {
     static final String DB_URL = "jdbc:mysql://localhost:3306/clothing";
     static final String USER = "root";
     static final String PASS = "Ch@d1234";
+    //-------------USER---------------//
+    protected final ArrayList<User> mainUser;
+    protected final ArrayList<User> guestUser;
+
     //-------------MEN---------------//
     protected final ArrayList<Clothing> bootsForMen;
     protected final ArrayList<Clothing> hoodiesForMen;
@@ -36,10 +40,8 @@ public class DBConnector {
     protected final ArrayList<Clothing> allKidsClothes;
     protected final ArrayList<Clothing> allClothes;
     protected final ArrayList<Clothing> allRecycledClothes;
-    //-------------USER---------------//
-    protected ArrayList<User> guestUser;
-    protected ArrayList<Clothing> RecyclingClothes;
-
+    //-------------SHOPPINGCART---------------//
+    protected  ArrayList<ShoppingCart> removeStockShoppingCart;
 
     public DBConnector() {
         //-------------MEN---------------//
@@ -69,10 +71,68 @@ public class DBConnector {
         this.allKidsClothes = new ArrayList<>();
         this.allClothes = new ArrayList<>();
         this.allRecycledClothes = new ArrayList<>();
+        //-------------SHOPPINGCART---------------//
+        this.removeStockShoppingCart = new ArrayList<>();
         //-------------USER---------------//
+        this.mainUser = new ArrayList<>();
         this.guestUser = new ArrayList<>();
     }
+    /*-------------------------------SHOPPINGCART-----------------------------------------*/
+    public void removeStock(ArrayList<Clothing> itemsInCart) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Iterate through the items in the shopping cart
+            for (Clothing item : itemsInCart) {
+                // Build and execute the SQL query based on product type
+                String sql = "";
+                switch (item.getType()) {
+                    case "Boots":
+                        sql = "UPDATE Boots SET Stock = Stock - 1 WHERE ID + gender = ?";
+                        break;
+                    case "Hoodies":
+                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                        break;
+                    case "Jackets":
+                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                        break;
+                    case "Pants":
+                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                        break;
+                    case "Sneakers":
+                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                        break;
+                    case "TShirts":
+                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                        break;
+                }
+
+                // Execute the update if a valid SQL statement was built
+                if (!sql.isEmpty()) {
+                    stmt = conn.prepareStatement(sql);
+                    stmt.setInt(1, item.getID());
+                    stmt.executeUpdate();
+                }
+            }
+        } catch (SQLException | ClassNotFoundException se) {
+            se.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    /*-------------------------------RECYCLED-----------------------------------------*/
     public void readRecycledClothes() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -88,6 +148,7 @@ public class DBConnector {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String brand = rs.getString("brand");
                 String model = rs.getString("model");
                 String gender = rs.getString("gender");
@@ -95,7 +156,7 @@ public class DBConnector {
                 String color = rs.getString("color");
                 int price = rs.getInt("price");
 
-                Clothing recycledClothing = new Clothing(brand, model,  gender,  size, color, price);
+                RecycledClothes recycledClothing = new RecycledClothes(id, brand, model,  gender,  size, color, price);
                 allRecycledClothes.add(recycledClothing);
             }
             rs.close();
@@ -157,8 +218,7 @@ public class DBConnector {
             }
         }
     }
-
-
+    /*-------------------------------MEN-----------------------------------------*/
     public void readMenBoots() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -468,6 +528,318 @@ public class DBConnector {
         return tshirtsForMen;
     }
 
+
+    /*----------------------------------WOMEN--------------------------------------*/
+
+    public void readWomenBoots() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM boots WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                int size = rs.getInt("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Boots womenBoots = new Boots(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                bootsForWomen.add(womenBoots);
+                allWomenClothes.add(womenBoots);
+                allClothes.add(womenBoots);
+
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    public ArrayList<Clothing> getBootsForWomen() {
+        return bootsForWomen;
+    }
+
+    public void readWomenHoodies() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM hoodies WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                String size = rs.getString("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Hoodies womenHoodies = new Hoodies(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                hoodiesForWomen.add(womenHoodies);
+                allWomenClothes.add(womenHoodies);
+                allClothes.add(womenHoodies);
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+    public ArrayList<Clothing> getHoodiesForWomen() {
+        return hoodiesForWomen;
+    }
+
+    public void readWomenJackets() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM jacket WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                String size = rs.getString("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Jacket womenJacket = new Jacket(id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                jacketsForWomen.add(womenJacket);
+                allWomenClothes.add(womenJacket);
+                allClothes.add(womenJacket);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+    public ArrayList<Clothing> getJacketsForWomen() {
+        return jacketsForWomen;
+    }
+
+    public void readWomenPants() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM pants WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                String size = rs.getString("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Pants womenPants = new Pants(id, price, discountPrice, stock, type, brand, genderResult, size, color, model);
+                pantsForWomen.add(womenPants);
+                allWomenClothes.add(womenPants);
+                allClothes.add(womenPants);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+    public ArrayList<Clothing> getPantsForWomen() {
+        return pantsForWomen;
+    }
+
+    public void readWomenSneakers() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM sneakers WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                int size = rs.getInt("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Sneakers womenSneakers = new Sneakers(id, price, discountPrice,stock, type, brand, genderResult, size, color, model);
+                sneakersForWomen.add(womenSneakers);
+                allWomenClothes.add(womenSneakers);
+                allClothes.add(womenSneakers);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+    public ArrayList<Clothing> getSneakersForWomen() {
+        return sneakersForWomen;
+    }
+
+    public void readWomenTshirts() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql =
+                    "SELECT * FROM tshirt WHERE gender= 'Women'";
+            stmt = conn.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int price = rs.getInt("price");
+                int discountPrice = rs.getInt("discountPrice");
+                int stock = rs.getInt("stock");
+                String type = rs.getString("type");
+                String brand = rs.getString("brand");
+                String genderResult = rs.getString("gender");
+                String size = rs.getString("size");
+                String model = rs.getString("model");
+                String color = rs.getString("color");
+
+                Tshirt womenTshirt = new Tshirt (id, price, discountPrice,stock, type, brand,genderResult, size,color, model);
+                tshirtsForWomen.add(womenTshirt);
+                allWomenClothes.add(womenTshirt);
+                allClothes.add(womenTshirt);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+
+    public ArrayList<Clothing> getTshirtsForWomen() {
+        return tshirtsForWomen;
+    }
+
     public void readBootsForKids() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -516,6 +888,7 @@ public class DBConnector {
             }
         }
     }
+    /*------------------------------------KIDS------------------------------------*/
 
     public ArrayList<Clothing> getBootsForKids() {
         return bootsForKids;
@@ -672,6 +1045,9 @@ public class DBConnector {
             }
         }
     }
+    public ArrayList<Clothing> getPantsForKids() {
+        return pantsForKids;
+    }
 
 
     public void readTshirtForKids() {
@@ -721,6 +1097,9 @@ public class DBConnector {
             }
         }
     }
+    public ArrayList<Clothing> getTshirtsForKids() {
+        return tshirtsForKids;
+    }
 
     public void readSneakersForKids() {
         Connection conn = null;
@@ -769,17 +1148,115 @@ public class DBConnector {
             }
         }
     }
-
-
-    public ArrayList<Clothing> getPantsForKids() {
-        return pantsForKids;
-    }
-    public ArrayList<Clothing> getTshirtsForKids() {
-        return tshirtsForKids;
-    }
     public ArrayList<Clothing> getSneakersForKids() {
         return sneakersForKids;
     }
+
+
+    /*----------------------------------USER--------------------------------------*/
+
+    public void saveUserData(String Name, String Password,String email, String adress, int regNr,int accountNr) {
+        //Users userData = new Users();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //System.out.println("Connecting do database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String sql = "INSERT INTO User (Name, Password, email, adress, regNr, accountNr) VALUES(?,?,?,?,?,?)";
+            stmt = conn.prepareStatement((sql));
+
+            int userID = 0;
+            stmt.setString(1,Name);
+            stmt.setString(2,Password);
+            stmt.setString(3,email);
+            stmt.setString(4,adress);
+            stmt.setInt(5,regNr);
+            stmt.setInt(6,accountNr);
+
+
+            int rowsAffected = stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public void readUserData(){
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //System.out.println("Connecting do database...");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            //System.out.println("Creating statement...");
+            String sql = "SELECT * FROM user";
+            stmt = conn.prepareStatement((sql));
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int userID = rs.getInt("ID");
+                String username = rs.getString("name");
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+                String address = rs.getString("address");
+                int regNr = rs.getInt("regNr");
+                int accountNr = rs.getInt("accountNr");
+                User user = new User(username, password, email, address, regNr, accountNr);
+
+                if (regNr != 0 && accountNr != 0) {
+                    // Create mainUser with regNr and accountNr
+                    User newMainUser = new User(username, password, email, address, regNr, accountNr);
+                    // Add mainUser to your mainUser collection
+                    mainUser.add(newMainUser);
+                } else {
+                    // Create guestUser without regNr and accountNr
+                    User newGuestUser = new User(username, password, email, address);
+                    // Add guestUser to your guestUser collection
+                    guestUser.add(newGuestUser);
+                }
+                mainUser.add(user);
+                guestUser.add(user);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+        }
+    }
+    public ArrayList<User> getGuestUser() {
+        return guestUser;
+    }
+    public ArrayList<User> getMainUser() {
+        return mainUser;
+    }
+    /*-----------------------------------GETTER-------------------------------------*/
 
     public ArrayList<Clothing> getAllMenClothes() {
         return allMenClothes;
@@ -796,6 +1273,7 @@ public class DBConnector {
     public ArrayList<Clothing> getAllClothes() {
         return allClothes;
     }
+    /*----------------------------------READALL--------------------------------------*/
 
     public void readAllData(){
         //-----Men-----//
@@ -806,7 +1284,13 @@ public class DBConnector {
         readMenTshirts();
         readMenSneakers();
         //-----Women-----//
-
+        readWomenBoots();
+        readWomenHoodies();
+        readWomenTshirts();
+        readWomenJackets();
+        readWomenPants();
+        readWomenTshirts();
+        readWomenSneakers();
         //-----Kids-----//
         readBootsForKids();
         readJacketsForKids();
@@ -814,8 +1298,9 @@ public class DBConnector {
         readPantsForKids();
         readTshirtForKids();
         readSneakersForKids();
-
+        //-----Recycled-----//
         readRecycledClothes();
+        //-----User-----//
 
     }
 }

@@ -3,26 +3,27 @@ package org.example;
 public class ManageRecycled {
     TextUI ui = new TextUI();
     DBConnector db = new DBConnector();
-    int price;
-    int stock;
-    String type;
-    String brand;
-    String gender;
-    String color;
-    String model;
+    User currentUser;
+    Homepage h;
 
 
-    public ManageRecycled(int price, String type, String brand, String gender, String color) {
-        this.price = price;
-        this.type = type;
-        this.brand = brand;
-        this.gender = gender;
-        this.color = color;
-    }
 
     public void sellingDialog () {
-        ui.displayMsg("");
-        ui.displayMsg("Welcome to the Recyclingpage, where we sell your old clothing.\nLet's get started.");
+        if (isLoggedIn()) {
+            ui.displayMsg("");
+
+            ui.displayMsg("Welcome " + currentUser + " to the Recyclingpage, where we sell your old clothing.\nLet's get started.");
+        } else {
+            ui.displayMsg("Please login or register as a user in order to sell clothes");
+            String choice = ui.getInput("[1] Log in \n[2] Register user");
+            if (choice.equals("1")){
+            h.login();
+            }
+            else {
+                h.createAccount();
+            }
+
+        }
 
         registerClothing();
     }
@@ -77,43 +78,47 @@ public class ManageRecycled {
         }
 
 
-        ui.displayMsg("\n The clothing is now registered");
+        ui.displayMsg("\nThe clothing is now registered");
 
         //paymentCalculator();
 
         int sellPrice = paymentCalculator();
-        Clothing recycledClothing = new Clothing(inputBrand,inputModel,inputGender,inputSize,inputColor,sellPrice);
+        RecycledClothes recycledClothing = new RecycledClothes(inputBrand,inputModel,inputGender,inputSize,inputColor,sellPrice);
         db.saveRecycledClothes(inputBrand,inputModel,inputGender,inputSize,inputColor,sellPrice);
 
     }
 
     public int paymentCalculator () {
-        int inputOldprice = Integer.parseInt(ui.getInput(" Enter the old price, for the clothing. Price is in $. "));
+        int inputOldPrice = ui.getNumericInput("Enter the old price, for the clothing in $. ");
 
-        double returnPrice = 0.35 * inputOldprice;
-        double sellPrice = 0.90 * inputOldprice;
+        double returnPrice = 0.35 * inputOldPrice;
+        double sellPrice = 0.90 * inputOldPrice;
 
         ui.displayMsg("\nYou will get: " + returnPrice + "$ for your product");
-
         String input = ui.getInput("\nWould you like to accept this offer or decline? Pres 'Y' for Yes and 'N' for no ");
 
         if (input.equalsIgnoreCase("Y")){
-            String input2 = ui.getInput("Enter your cardn number");
+            ui.displayMsg("\nWe will now send a e-mail to " + currentUser.getEmail() + " with next steps.\nThank you for choosing Renewed Couture GangGang Corner ");
 
-            receiptAndTransactionDialog ();
         }
         else if (input.equalsIgnoreCase("N")) {
             {
                 ui.displayMsg("Unfortunately we cannot offer a different price for the clothes. Please try again");
-                paymentCalculator();
+                //paymentCalculator();
             }
         }
         return (int) sellPrice;
     }
 
-    public void receiptAndTransactionDialog() {
 
 
+
+    public boolean isLoggedIn() {
+        if (currentUser != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
