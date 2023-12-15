@@ -111,11 +111,11 @@ public class Homepage {
                     break;
                 case "5":
                 case "login":
-                    //login();
+                    login();
                     break;
                 case "6":
                 case "create account":
-                    //createAccount();
+                    createAccount();
                     break;
                 default:
                     ui.displayMsg("Seems like you made a typo, try again\n");
@@ -215,21 +215,21 @@ public class Homepage {
         String inputUsername = ui.getInput("Enter your username:");
         String inputPassword = ui.getInput("Enter your password:");
 
-
         for (User user : db.mainUser) {
             if (user.getUsername().equals(inputUsername) && user.getPassword().equals(inputPassword)) {
                 ui.displayMsg("");
                 currentUser = user;
-                homeMenu.remove(5);
-                homeMenu.set(4, "Logout");
                 System.out.println("Welcome " + currentUser.getUsername());
                 homepageMenuDialog();
                 return;
             }
+            else {
+                ui.displayMsg("");
+                System.out.println("Invalid username or password. Please try again.");
+                login();
+            }
         }
-        ui.displayMsg("");
-        System.out.println("Invalid username or password. Please try again.");
-        login();
+
     }
     public void createAccount() {
         String newUsername = ui.getInput("Enter a new username:");
@@ -247,6 +247,8 @@ public class Homepage {
     }
     public void logout() {
         currentUser = null;
+        homeMenu.set(4, "[5] Login");
+        homeMenu.set(5, "[6] Create Account");
         homepageMenuDialog();
     }
     public boolean isLoggedIn() {
@@ -255,8 +257,6 @@ public class Homepage {
             homeMenu.set(5, "[6] Logout");
             return true;
         } else {
-            homeMenu.set(4, "[5] Login");
-            homeMenu.set(5, "[6] Create Account");
             return false;
         }
     }

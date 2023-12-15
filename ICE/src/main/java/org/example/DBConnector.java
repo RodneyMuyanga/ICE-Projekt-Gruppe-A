@@ -8,7 +8,7 @@ public class DBConnector {
     //mysql:mysql-connector-java:RELEASE
     static final String DB_URL = "jdbc:mysql://localhost:3306/clothing";
     static final String USER = "root";
-    static final String PASS = "Ch@d1234";
+    static final String PASS = "SQLCPH";
     //-------------USER---------------//
     protected final ArrayList<User> mainUser;
     protected final ArrayList<User> guestUser;
@@ -1155,7 +1155,7 @@ public class DBConnector {
 
     /*----------------------------------USER--------------------------------------*/
 
-    public void saveUserData(String Name, String Password,String email, String adress, int regNr,int accountNr) {
+    public void saveUserData(String username, String password,String email, String address, int regNr,int accountNr) {
         //Users userData = new Users();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1165,14 +1165,14 @@ public class DBConnector {
             //System.out.println("Connecting do database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            String sql = "INSERT INTO User (Name, Password, email, adress, regNr, accountNr) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO User (username, password, email, address, regNr, accountNr) VALUES(?,?,?,?,?,?)";
             stmt = conn.prepareStatement((sql));
 
             int userID = 0;
-            stmt.setString(1,Name);
-            stmt.setString(2,Password);
+            stmt.setString(1,username);
+            stmt.setString(2,password);
             stmt.setString(3,email);
-            stmt.setString(4,adress);
+            stmt.setString(4,address);
             stmt.setInt(5,regNr);
             stmt.setInt(6,accountNr);
 
@@ -1212,7 +1212,7 @@ public class DBConnector {
 
             while (rs.next()) {
                 int userID = rs.getInt("ID");
-                String username = rs.getString("name");
+                String username = rs.getString("username");
                 String password = rs.getString("password");
                 String email = rs.getString("email");
                 String address = rs.getString("address");

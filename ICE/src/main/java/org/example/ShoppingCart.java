@@ -171,7 +171,7 @@ public class ShoppingCart {
         itemsInCart.add(clothing);
     }
 
-    
+
 
     private void removeItem(){
         //String response = ui.getInput("Name the item you want removed");
@@ -182,8 +182,10 @@ public class ShoppingCart {
             Clothing clothing = iterator.next();
             if(clothing.getID() == response){
                 iterator.remove();
-            }
+            } else 
         }
+        ui.displayMsg("The product was successfully removed");
+        CartDialog();
     }
 
     private void clearCart(){
