@@ -182,7 +182,10 @@ public class ShoppingCart {
             Clothing clothing = iterator.next();
             if(clothing.getID() == response){
                 iterator.remove();
-            } else 
+            } else {
+                ui.displayMsg("Seems like the product id you typed doesn't exist, try again");
+                removeItem();
+            }
         }
         ui.displayMsg("The product was successfully removed");
         CartDialog();
