@@ -15,6 +15,6 @@ protected String size;
     }
 
     public String toString(){
-        return "Recycled clothing ID: " + ID + " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Size: " + size + " | Color: " + color + " | Price: " + price;
+        return "Recycled clothing ID: " + ID + " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Size: " + size + " | Color: " + color + " | Price: " + price+"\n";
     }
 }

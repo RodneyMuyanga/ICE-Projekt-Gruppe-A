@@ -8,11 +8,15 @@ public class Homepage {
     private final DBConnector db = new DBConnector();
     private ArrayList<String> homeMenu = new ArrayList<>();
     private ArrayList<String> selectClothesOrNotMenu = new ArrayList<>();
-    private ClothingSelection cs = new ClothingSelection();
     private ManageRecycled mr = new ManageRecycled();
     private User currentUser;
+    private ArrayList<String> chooseClothingMenu = new ArrayList<>();
+    private ArrayList<String> chooseRecycledClothingMenu = new ArrayList<>();
+    protected ArrayList<Clothing> chosenClothes;
+    private String userName2 = "";
 
     public void setup() {
+        db.readUserData();
         db.readAllData();
         ui.displayMsg("Welcome to Renewed Couture GangGang Corner\n");
         homepageMenu();
@@ -20,6 +24,55 @@ public class Homepage {
         //ManageRecycled manageRecycled = new ManageRecycled(90, "type", "brand", "gender", "color");
         //manageRecycled.sellingDialog();
         //chooseMenMenu();
+    }
+
+    public void login() {
+        String inputUserName = ui.getInput("Enter your username:");
+        String inputPassword = ui.getInput("Enter your password:");
+
+        for (User user : db.getMainUser()) {
+            if (user.getUsername().equals(inputUserName) && user.getPassword().equals(inputPassword)) {
+                ui.displayMsg("");
+                userName2 = inputUserName;
+                currentUser = user;
+                System.out.println("Welcome " + currentUser.getUsername());
+                homepageMenuDialog();
+                return;
+            }
+        }
+        ui.displayMsg("");
+        System.out.println("Invalid username or password. Please try again.");
+        login();
+    }
+
+    public void createAccount() {
+        String newUsername = ui.getInput("Enter a new username:");
+        String newPassword = ui.getInput("Enter a new password:");
+        String inputEmail = ui.getInput("Enter a e-mail");
+        String inputAddress = ui.getInput("Enter your address");
+        int inputRegNr = Integer.parseInt(ui.getInput("Enter your Registration number"));
+        int inputAccountNr = Integer.parseInt(ui.getInput("Enter your Account number"));
+
+        ui.displayMsg("");
+        db.saveUserData(newUsername, newPassword,inputEmail, inputAddress,inputRegNr,inputAccountNr);
+        ui.displayMsg("New user created successfully");
+        db.readUserData();
+        login();
+    }
+    public void logout() {
+        currentUser = null;
+        homeMenu.set(4, "[5] Login");
+        homeMenu.set(5, "[6] Create Account");
+        homepageMenuDialog();
+    }
+    public boolean isLoggedIn() {
+        if (currentUser != null) {
+            homeMenu.set(4, "[5] Sell Clothes");
+            homeMenu.set(5, "[6] Logout");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void homepageMenu() {
@@ -38,8 +91,8 @@ public class Homepage {
         }
     }
 
-
     public void homepageMenuDialog() {
+        //homepageMenu();
         ui.displayMsg("Choose a category");
         for (int i = 0; i < homeMenu.size(); i++) {
             ui.displayMsg(homeMenu.get(i));
@@ -51,33 +104,35 @@ public class Homepage {
                 case "1":
                 case "men":
                 case "men clothing":
-                    cs.chooseMenSelection();
+                    chooseMenSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "2":
                 case "woman":
                 case "woman clothing":
-                    cs.chooseWomenSelection();
+                    chooseWomenSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "3":
                 case "kids":
                 case "kids clothing":
-                    cs.chooseKidsSelection();
+                    chooseKidsSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
-                    cs.chooseRecycledSelection();
+                    chooseRecycledSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
                 case "sell":
                     mr.sellingDialog();
+                    break;
                 case "6":
                 case "logout":
                     //logout();
+                    break;
                 default:
                     ui.displayMsg("Seems like you made a typo, try again\n");
                     homepageMenuDialog();
@@ -88,25 +143,25 @@ public class Homepage {
                 case "1":
                 case "men":
                 case "men clothing":
-                    cs.chooseMenSelection();
+                    chooseMenSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "2":
                 case "woman":
                 case "woman clothing":
-                    cs.chooseWomenSelection();
+                    chooseWomenSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "3":
                 case "kids":
                 case "kids clothing":
-                    cs.chooseKidsSelection();
+                    chooseKidsSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "4":
                 case "recycled":
                 case "recycled clothing":
-                    cs.chooseRecycledSelection();
+                    chooseRecycledSelection();
                     selectClothesOrNotDialogQuestionMark();
                     break;
                 case "5":
@@ -137,7 +192,7 @@ public class Homepage {
             case "1":
             case "select":
             case "select clothes":
-                selectClothesDialog(cs.getChosenClothes());
+                selectClothesDialog(getChosenClothes());
                 break;
             case "2":
             case "back":
@@ -211,54 +266,315 @@ public class Homepage {
         }
     }
 
-    public void login() {
-        String inputUsername = ui.getInput("Enter your username:");
-        String inputPassword = ui.getInput("Enter your password:");
-
-        for (User user : db.mainUser) {
-            if (user.getUsername().equals(inputUsername) && user.getPassword().equals(inputPassword)) {
+    public void chooseClothingMenu() {
+        if (chooseClothingMenu.size() != 8) {
+            chooseClothingMenu.add("[1] All clothes");
+            chooseClothingMenu.add("[2] Jackets");
+            chooseClothingMenu.add("[3] Hoodies");
+            chooseClothingMenu.add("[4] T-shirts");
+            chooseClothingMenu.add("[5] Pants");
+            chooseClothingMenu.add("[6] Sneakers");
+            chooseClothingMenu.add("[7] Boots");
+            chooseClothingMenu.add("[8] Back");
+        }
+    }
+    public void chooseRecycledClothingMenu(){
+        if(chooseRecycledClothingMenu.size() !=2){
+            chooseRecycledClothingMenu.add("[1] All clothes");
+            chooseRecycledClothingMenu.add("[2] Back");
+        }
+    }
+    public ArrayList<Clothing> chooseMenSelection() {
+        chooseClothingMenu();
+        ui.displayMsg("Men's Clothing Menu:\n");
+        for (int i = 0; i < chooseClothingMenu.size(); i++) {
+            System.out.println(chooseClothingMenu.get(i));
+        }
+        String response = ui.getInput("");
+        switch (response.toLowerCase()) {
+            case "1":
+            case "all clothes":
+                ui.displayMsg("Displaying all clothes\n");
+                db.readAllData();
+                for (Clothing clothing : db.getAllMenClothes()) {
+                    System.out.println(clothing);
+                }
                 ui.displayMsg("");
-                currentUser = user;
-                System.out.println("Welcome " + currentUser.getUsername());
+                return this.chosenClothes = db.getAllMenClothes();
+            //break;
+            case "2":
+            case "jackets":
+                ui.displayMsg("Displaying all jackets\n");
+                db.readMenJackets();
+                for (Clothing clothing : db.getJacketsForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getJacketsForMen();
+            //break;
+            case "3":
+            case "hoodies":
+                ui.displayMsg("Displaying all hoodies\n");
+                db.readMenHoodies();
+                for (Clothing clothing : db.getHoodiesForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getHoodiesForMen();
+            //break;
+            case "4":
+            case "t-shirts":
+                ui.displayMsg("Displaying all T-shirts\n");
+                db.readMenTshirts();
+                for (Clothing clothing : db.getTshirtsForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getTshirtsForMen();
+            //break;
+            case "5":
+            case "pants":
+                ui.displayMsg("Displaying all pants\n");
+                db.readMenPants();
+                for (Clothing clothing : db.getPantsForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getPantsForMen();
+            //break;
+            case "6":
+            case "sneakers":
+                ui.displayMsg("Displaying all sneakers\n");
+                db.readMenSneakers();
+                for (Clothing clothing : db.getSneakersForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getSneakersForMen();
+            case "7":
+            case "boots":
+                ui.displayMsg("Displaying all boots\n");
+                db.readMenBoots();
+                for (Clothing clothing : db.getBootsForMen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getBootsForMen();
+            case "8":
+            case "back":
+                ui.displayMsg("Returning back to the home-menu...");
                 homepageMenuDialog();
-                return;
-            }
-            else {
+                break;
+            default:
+                ui.displayMsg("Seems like you made a typo, try again\n");
                 ui.displayMsg("");
-                System.out.println("Invalid username or password. Please try again.");
-                login();
-            }
+                return chooseMenSelection();
         }
+        return null;
+    }
 
-    }
-    public void createAccount() {
-        String newUsername = ui.getInput("Enter a new username:");
-        String newPassword = ui.getInput("Enter a new password:");
-        String inputEmail = ui.getInput("Enter a e-mail");
-        String inputAddress = ui.getInput("Enter your address");
-        int inputRegNr = Integer.parseInt(ui.getInput("Enter your Registration number"));
-        int inputAccountNr = Integer.parseInt(ui.getInput("Enter your Account number"));
-
-        ui.displayMsg("");
-        db.saveUserData(newUsername, newPassword,inputEmail, inputAddress,inputRegNr,inputAccountNr);
-        ui.displayMsg("New user created successfully");
-        db.readUserData();
-        login();
-    }
-    public void logout() {
-        currentUser = null;
-        homeMenu.set(4, "[5] Login");
-        homeMenu.set(5, "[6] Create Account");
-        homepageMenuDialog();
-    }
-    public boolean isLoggedIn() {
-        if (currentUser != null) {
-            homeMenu.set(4, "[5] Sell Clothes");
-            homeMenu.set(5, "[6] Logout");
-            return true;
-        } else {
-            return false;
+    public ArrayList<Clothing> chooseWomenSelection() {
+        chooseClothingMenu();
+        ui.displayMsg("Women's Clothing Menu:");
+        for (int i = 0; i < chooseClothingMenu.size(); i++) {
+            System.out.println(chooseClothingMenu.get(i));
         }
+        String response = ui.getInput("");
+
+        switch (response.toLowerCase()) {
+            case "1":
+            case "all clothes":
+                ui.displayMsg("Displaying all clothes\n");
+                db.readAllData();
+                for (Clothing clothing : db.getAllWomenClothes()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getAllWomenClothes();
+            case "2":
+            case "jackets":
+                ui.displayMsg("Displaying all jackets\n");
+                db.readWomenJackets();
+                for (Clothing clothing : db.getJacketsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getJacketsForWomen();
+            case "3":
+            case "hoodies":
+                ui.displayMsg("Displaying all hoodies\n");
+                db.readWomenHoodies();
+                for (Clothing clothing : db.getHoodiesForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getHoodiesForWomen();
+            case "4":
+            case "t-shirts":
+                ui.displayMsg("Displaying all t-shirts\n");
+                db.readWomenTshirts();
+                for (Clothing clothing : db.getTshirtsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getTshirtsForWomen();
+            case "5":
+            case "pants":
+                ui.displayMsg("Displaying all pants\n");
+                db.readWomenPants();
+                for (Clothing clothing : db.getPantsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getPantsForWomen();
+            case "6":
+            case "sneakers":
+                ui.displayMsg("Displaying all sneakers\n");
+                db.readWomenSneakers();
+                for (Clothing clothing : db.getSneakersForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getSneakersForWomen();
+            case "7":
+            case "boots":
+                ui.displayMsg("Displaying all boots\n");
+                db.readWomenBoots();
+                for (Clothing clothing : db.getBootsForWomen()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getBootsForWomen();
+            case "8":
+            case "back":
+                ui.displayMsg("Returning back to the home-menu...");
+                homepageMenuDialog();
+                break;
+            default:
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                ui.displayMsg("");
+                return chooseWomenSelection();
+        }
+        return null;
+    }
+
+    public ArrayList<Clothing> chooseKidsSelection() {
+        chooseClothingMenu();
+        ui.displayMsg("Kids Clothing Menu:\n");
+        for (int i = 0; i < chooseClothingMenu.size(); i++) {
+            ui.displayMsg((i + 1) + ". " + chooseClothingMenu.get(i));
+        }
+        String response = ui.getInput("");
+
+        switch (response.toLowerCase()) {
+            case "1":
+            case "all clothes":
+                ui.displayMsg("Displaying all clothes\n");
+                db.readAllData();
+                for (Clothing clothing : db.getAllKidsClothes()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getAllKidsClothes();
+            case "2":
+            case "jackets":
+                ui.displayMsg("Displaying all jackets\n");
+                db.readJacketsForKids();
+                for (Clothing clothing : db.getJacketsForKids()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getJacketsForKids();
+            case "3":
+            case "hoodies":
+                ui.displayMsg("Displaying all hoodies\n");
+                db.readHoodiesForKids();
+                for (Clothing clothing : db.getHoodiesForKids()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getHoodiesForKids();
+            case "4":
+            case "t-shirts":
+                ui.displayMsg("Displaying all t-shirts\n");
+                db.readTshirtForKids();
+                for (Clothing clothing : db.getTshirtsForKids()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getTshirtsForKids();
+            case "5":
+            case "pants":
+                ui.displayMsg("Displaying all pants\n");
+                db.readPantsForKids();
+                for (Clothing clothing : db.getPantsForKids()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getPantsForKids();
+            case "6":
+            case "sneakers":
+                ui.displayMsg("Displaying all sneakers\n");
+                db.readSneakersForKids();
+                for (Clothing clothing : db.getSneakersForKids()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getSneakersForKids();
+            case "7":
+            case "boots":
+                ui.displayMsg("Displaying all boots\n");
+                db.readBootsForKids();
+                for (Clothing clothing : db.getBootsForKids()) {
+                    System.out.println((clothing));
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getBootsForKids();
+            case "8":
+            case "back":
+                ui.displayMsg("Returning back to the home-menu.");
+                homepageMenuDialog();
+                break;
+            default:
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                ui.displayMsg("");
+                return chooseKidsSelection();
+        }
+        return null;
+    }
+
+
+    public ArrayList<Clothing> chooseRecycledSelection() {
+        chooseRecycledClothingMenu();
+        ui.displayMsg("Recycled Clothing Menu:\n");
+        for (int i = 0; i < chooseRecycledClothingMenu.size(); i++) {
+            ui.displayMsg((i + 1) + ". " + chooseRecycledClothingMenu.get(i));
+        }
+        String response = ui.getInput("");
+
+        switch (response.toLowerCase()) {
+            case "1":
+            case "all clothes":
+                ui.displayMsg("Displaying all recycled clothes\n");
+                db.readRecycledClothes();
+                for (Clothing clothing : db.getAllRecycledClothes()) {
+                    System.out.println(clothing);
+                }
+                ui.displayMsg("");
+                return this.chosenClothes = db.getAllRecycledClothes();
+            case "2":
+            case "back":
+                ui.displayMsg("Returning back to the home-menu...");
+                homepageMenuDialog();
+                break;
+            default:
+                ui.displayMsg("Try again");
+                chooseRecycledSelection();
+        }
+        return null;
+    }
+    public ArrayList<Clothing> getChosenClothes() {
+        return chosenClothes;
     }
 }
 

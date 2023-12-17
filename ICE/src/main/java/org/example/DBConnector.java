@@ -1218,11 +1218,12 @@ public class DBConnector {
                 String address = rs.getString("address");
                 int regNr = rs.getInt("regNr");
                 int accountNr = rs.getInt("accountNr");
-                User user = new User(username, password, email, address, regNr, accountNr);
+                //User newuser = new User(username, password, email, address, regNr, accountNr);
 
                 if (regNr != 0 && accountNr != 0) {
                     // Create mainUser with regNr and accountNr
-                    User newMainUser = new User(username, password, email, address, regNr, accountNr);
+                    User newMainUser = new User(userID, username, password, email, address, regNr, accountNr);
+                    String testUserName = newMainUser.getUsername();
                     // Add mainUser to your mainUser collection
                     mainUser.add(newMainUser);
                 } else {
@@ -1231,8 +1232,8 @@ public class DBConnector {
                     // Add guestUser to your guestUser collection
                     guestUser.add(newGuestUser);
                 }
-                mainUser.add(user);
-                guestUser.add(user);
+
+
             }
             rs.close();
             stmt.close();

@@ -25,13 +25,14 @@ public class User {
         this.email = email;
         this.address = address;
     }
+public User (){
 
-    public User(String username, String password, String email, String address, int regNr, int accountNr) {
-    }
+}
 
     public User(String username, String password, String email, String address) {
 
     }
+
 
     public int getId() {
         return id;

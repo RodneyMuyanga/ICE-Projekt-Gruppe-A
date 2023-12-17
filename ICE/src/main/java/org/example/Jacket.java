@@ -12,6 +12,6 @@ public class Jacket extends Clothing{
     }
     @Override
     public String toString(){
-        return "Jacket ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "Stock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color;    }
+        return "Jacket ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + " | Stock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color+"\n";    }
 }
 

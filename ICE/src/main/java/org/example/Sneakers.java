@@ -10,6 +10,6 @@ public class Sneakers extends Clothing {
 
     @Override
     public String toString() {
-        return "Sneakers ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + "Model: " + model + " | Gender: " + gender + " | Color: " + color;
+        return "Sneakers ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + "Model: " + model + " | Gender: " + gender + " | Color: " + color+"\n";
     }
 }
