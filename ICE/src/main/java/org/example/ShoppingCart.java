@@ -165,14 +165,6 @@ public class ShoppingCart {
         }
     }
 
-    /*private ArrayList<Clothing> removeStock() {
-        ArrayList<Clothing> removeStockList = new ArrayList<Clothing>();
-        for (Clothing clothing : itemsInCart) {
-            removeStockList.add(clothing);
-        }
-        return removeStockList;
-    }*/
-
     private void addItem(Clothing clothing){
         itemsInCart.add(clothing);
     }

@@ -15,6 +15,10 @@ public class Homepage {
     private ArrayList<String> chooseRecycledClothingMenu = new ArrayList<>();
     protected ArrayList<Clothing> chosenClothes;
     protected ArrayList<String> homeMenu_loggedIn = new ArrayList<>();
+    protected ArrayList<Clothing> itemsInCart = new ArrayList<>();
+    private final ArrayList<String>ShoppingCartMenu = new ArrayList<>();
+    private int paymentID;
+    private double amount;
 
     public void setup() {
         db.readUserData();
@@ -26,9 +30,6 @@ public class Homepage {
         selectClothesOrNotMenu();
         chooseRecycledClothingMenu();
         homepageMenuDialog();
-        //ManageRecycled manageRecycled = new ManageRecycled(90, "type", "brand", "gender", "color");
-        //manageRecycled.sellingDialog();
-        //chooseMenMenu();
     }
 
     public void login() {
@@ -68,13 +69,6 @@ public class Homepage {
         db.readUserData();
         login();
     }
-
-    /*public void logout() {
-        currentUser = null;
-        homeMenu.set(4, "[5] Login");
-        homeMenu.set(5, "[6] Create Account");
-        homepageMenuDialog();
-    }*/
 
     public boolean isLoggedIn() {
         if (currentUser != null) {
@@ -224,8 +218,7 @@ public class Homepage {
                 break;
         }
     }
-
-
+    
     private void selectClothesOrNotDialogQuestionMark() {
         //selectClothesOrNotMenu();
         ui.displayMsg("Choose an option");
@@ -642,11 +635,6 @@ public class Homepage {
     public ArrayList<Clothing> getChosenClothes() {
         return chosenClothes;
     }
-//
-//    TextUI ui = new TextUI();
-//    DBConnector db = new DBConnector();
-//    Homepage homepage = new Homepage();
-
 
     public void sellingDialog() {
         if (isLoggedIn()) {
@@ -709,8 +697,7 @@ public class Homepage {
         String input = ui.getInput("Are the information correct? : \n" + " Brand: " + inputBrand + "\n Model: " + inputModel + "\n Gender: " + inputGender + "\n Size: " + inputSize + "\n Color: " + inputColor + "\n\nPress 'Y' for yes and 'N' for no.");
 
         if (input.equalsIgnoreCase("Y")) {
-            //db.RecyclingClothes.add( clothing);
-            //ui.displayMsg("\n Perfect lets register the clothing in our system");
+
 
         } else if (input.equalsIgnoreCase("N")) {
             ui.displayMsg("Try again");
@@ -719,8 +706,6 @@ public class Homepage {
 
 
         ui.displayMsg("\nThe clothing is now registered");
-
-        //paymentCalculator();
 
         int sellPrice = paymentCalculator();
         RecycledClothes recycledClothing = new RecycledClothes(inputBrand, inputModel, inputGender, inputSize, inputColor, sellPrice);
@@ -749,199 +734,191 @@ public class Homepage {
         return (int) sellPrice;
     }
 
-        protected ArrayList<Clothing> itemsInCart = new ArrayList<>();
-        private final ArrayList<String>ShoppingCartMenu = new ArrayList<>();
-        private int paymentID;
-        private double amount;
-        private Homepage homepage;
 
-        public ArrayList<Clothing> getItemsInCart() {
-            return itemsInCart;
+
+    public ArrayList<Clothing> getItemsInCart() {
+        return itemsInCart;
+    }
+    private void displayCart(){
+        for (Clothing clothing : itemsInCart){
+            System.out.println((clothing));
         }
-        private void displayCart(){
-            for (Clothing clothing : itemsInCart){
-                System.out.println((clothing));
+    }
+
+    public void shoppingMenu() {
+        if ( ShoppingCartMenu.size() != 3){
+            ShoppingCartMenu.add("[1] Checkout");
+            ShoppingCartMenu.add("[2] Shop more");
+            ShoppingCartMenu.add("[3] Remove items");
+        }
+        for (String i : ShoppingCartMenu){
+            System.out.println(i);
+        }
+    }
+
+    public void CartDialog(){
+        ui.displayMsg("Your cart: ");
+        displayCart();
+        ui.displayMsg("Total: " + getTotalPrice() + "$");
+        ui.displayMsg("");
+
+        String input = "";
+        ui.displayMsg("Would you like to continue shopping?");
+        ui.displayMsg("");
+        shoppingMenu();
+        input = ui.getInput("");
+
+
+        switch (input.toLowerCase()) {
+            case "1":
+            case "checkout":
+                paymentDialog();
+                break;
+            case "2":
+            case "shop":
+            case "shop more":
+                homepageMenuDialog();
+                break;
+            case "3":
+            case "remove":
+            case "remove items":
+                removeItem();
+                break;
+            default:
+                ui.displayMsg("Seems like you made a typo, try again\n");
+                CartDialog();
+                break;
+        }
+    }
+
+    public int getTotalPrice(){
+        int total = 0;
+        for (Clothing c : itemsInCart){
+            total += c.price;
+        }
+        return total;
+    }
+
+    public void paymentDialog() {
+        displayCart();
+        db.readUserData();
+        ui.displayMsg("\nYour total is: " + getTotalPrice() + "$\n");
+
+        String input = "";
+        ui.displayMsg("Would you like to Login or register payment information? ");
+
+        input = ui.getInput("Press 'L' for Login or 'R' to add payment information");
+        ui.displayMsg(" ");
+        if (!input.equalsIgnoreCase("L")) {
+            addPaymentDetails();
+        }
+        else {
+            if (isLoggedIn()){
+                login();
             }
         }
+        // Perform the transaction
 
-        public void shoppingMenu() {
-            if ( ShoppingCartMenu.size() != 3){
-                ShoppingCartMenu.add("[1] Checkout");
-                ShoppingCartMenu.add("[2] Shop more");
-                ShoppingCartMenu.add("[3] Remove items");
-            }
-            for (String i : ShoppingCartMenu){
-                System.out.println(i);
-            }
+        ui.displayMsg("\n Verifying card or number");
+        ui.displayMsg("");
+
+        ui.displayMsg("Congratulations, your payment have been approved. \nHere is your receipt:");
+        displayCart();
+        ui.displayMsg("Total: " + getTotalPrice() + "$\n");
+
+
+        removeStock();
+        clearCart();
+    }
+
+    private void addPaymentDetails() {
+
+        String inputName = ui.getInput("Enter your Name:");
+        String inputEmail = ui.getInput("Enter your e-mail");
+        String inputAddress = ui.getInput("Enter delivery adress");
+
+        ui.displayMsg("");
+        ui.displayMsg("Is the info correct? ");
+        ui.displayMsg("");
+        System.out.println(" Name: " + inputName + "\n Email:  " + inputEmail + "\n Delivery Address  " + inputAddress);
+
+        ui.displayMsg("");
+        String correction = "";
+        correction = ui.getInput("Pres 'Y' for yes and 'N' for no");
+
+        if (correction.equalsIgnoreCase("Y")) {
+            User user = new User(inputName, inputEmail, inputAddress);
+            db.guestUser.add(user);
+            System.out.println("Super! Moving on to the payment");
+        } else {
+            System.out.println("Lets try again");
+            addPaymentDetails();
+
         }
 
-        public void CartDialog(){
-            ui.displayMsg("Your cart: ");
-            displayCart();
-            ui.displayMsg("Total: " + getTotalPrice() + "$");
-            ui.displayMsg("");
+        String input = "";
+        ui.displayMsg("\n Would you like to pay with card? or Mobilepay? ");
+        input = ui.getInput("Pres 'C' for card or 'M' for Mobilepay");
+        ui.displayMsg("");
 
-            String input = "";
-            ui.displayMsg("Would you like to continue shopping?");
-            ui.displayMsg("");
-            shoppingMenu();
-            input = ui.getInput("");
-
-
-            switch (input.toLowerCase()) {
-                case "1":
-                case "checkout":
-                    paymentDialog();
-                    break;
-                case "2":
-                case "shop":
-                case "shop more":
-                    homepage.homepageMenuDialog();
-                    break;
-                case "3":
-                case "remove":
-                case "remove items":
-                    removeItem();
-                    break;
-                default:
-                    ui.displayMsg("Seems like you made a typo, try again\n");
-                    CartDialog();
-                    break;
-            }
-        }
-
-        public int getTotalPrice(){
-            int total = 0;
-            for (Clothing c : itemsInCart){
-                total += c.price;
-            }
-            return total;
-        }
-
-        public void paymentDialog() {
-            displayCart();
-            db.readUserData();
-            ui.displayMsg("\nYour total is: " + getTotalPrice() + "$\n");
-
-            String input = "";
-            ui.displayMsg("Would you like to Login or register payment information? ");
-
-            input = ui.getInput("Press 'L' for Login or 'R' to add payment information");
-            ui.displayMsg(" ");
-            if (!input.equalsIgnoreCase("L")) {
-                addPaymentDetails();
-            }
-            else {
-                if (homepage.isLoggedIn()){
-                    homepage.login();
+        if (input.equalsIgnoreCase("C")) {
+            int inputRegNr;
+            do {
+                inputRegNr = Integer.parseInt(ui.getInput("Enter registration number"));
+                if (inputRegNr != 4) {
+                    System.out.println("The registration number is incorrect, try again");
                 }
-            }
-            // Perform the transaction
+            } while (inputRegNr != 4);
 
-            ui.displayMsg("\n Verifying card or number");
-            ui.displayMsg("");
-
-            ui.displayMsg("Congratulations, your payment have been approved. \nHere is your receipt:");
-            displayCart();
-            ui.displayMsg("Total: " + getTotalPrice() + "$\n");
-
-
-            removeStock();
-            clearCart();
+            int inputAccountNr;
+            do {
+                inputAccountNr = Integer.parseInt(ui.getInput("Enter account number"));
+                if (inputAccountNr != 10) {
+                    System.out.println("The account number is incorrect, try again");
+                }
+            } while (inputAccountNr != 10);
+        } else if (input.equalsIgnoreCase("M")) {
+            int phoneNumber;
+            do {
+                phoneNumber = Integer.parseInt(ui.getInput("Enter your phone number (8 numbers)"));
+                if (String.valueOf(phoneNumber).length() != 8) {
+                    System.out.println("The number does not have 8 digits, try again");
+                }
+            } while (String.valueOf(phoneNumber).length() != 8);
         }
+    }
 
-        private void addPaymentDetails() {
+    private ArrayList<Clothing> removeStock() {
+        ArrayList<Clothing> removeStockList = new ArrayList<Clothing>();
+        for (Clothing clothing : itemsInCart) {
+            removeStockList.add(clothing);
+        }
+        return removeStockList;
+    }
 
-            String inputName = ui.getInput("Enter your Name:");
-            String inputEmail = ui.getInput("Enter your e-mail");
-            String inputAddress = ui.getInput("Enter delivery adress");
+    private void addItem(Clothing clothing){
+        itemsInCart.add(clothing);
+    }
 
-            ui.displayMsg("");
-            ui.displayMsg("Is the info correct? ");
-            ui.displayMsg("");
-            System.out.println(" Name: " + inputName + "\n Email:  " + inputEmail + "\n Delivery Address  " + inputAddress);
+    private void removeItem(){
+        int response = ui.getNumericInput("Type the ID of the item you want removed");
+        Iterator<Clothing> iterator = itemsInCart.iterator();
 
-            ui.displayMsg("");
-            String correction = "";
-            correction = ui.getInput("Pres 'Y' for yes and 'N' for no");
-
-            if (correction.equalsIgnoreCase("Y")) {
-                User user = new User(inputName, inputEmail, inputAddress);
-                db.guestUser.add(user);
-                System.out.println("Super! Moving on to the payment");
+        while (iterator.hasNext()){
+            Clothing clothing = iterator.next();
+            if(clothing.getID() == response){
+                iterator.remove();
             } else {
-                System.out.println("Lets try again");
-                addPaymentDetails();
-
-            }
-
-            String input = "";
-            ui.displayMsg("\n Would you like to pay with card? or Mobilepay? ");
-            input = ui.getInput("Pres 'C' for card or 'M' for Mobilepay");
-            ui.displayMsg("");
-
-            if (input.equalsIgnoreCase("C")) {
-                int inputRegNr;
-                do {
-                    inputRegNr = Integer.parseInt(ui.getInput("Enter registration number"));
-                    if (inputRegNr != 4) {
-                        System.out.println("The registration number is incorrect, try again");
-                    }
-                } while (inputRegNr != 4);
-
-                int inputAccountNr;
-                do {
-                    inputAccountNr = Integer.parseInt(ui.getInput("Enter account number"));
-                    if (inputAccountNr != 10) {
-                        System.out.println("The account number is incorrect, try again");
-                    }
-                } while (inputAccountNr != 10);
-            } else if (input.equalsIgnoreCase("M")) {
-                int phoneNumber;
-                do {
-                    phoneNumber = Integer.parseInt(ui.getInput("Enter your phone number (8 numbers)"));
-                    if (String.valueOf(phoneNumber).length() != 8) {
-                        System.out.println("The number does not have 8 digits, try again");
-                    }
-                } while (String.valueOf(phoneNumber).length() != 8);
+                ui.displayMsg("Seems like the product id you typed doesn't exist, try again");
+                removeItem();
             }
         }
+        ui.displayMsg("The product was successfully removed");
+        CartDialog();
+    }
 
-        private ArrayList<Clothing> removeStock() {
-            ArrayList<Clothing> removeStockList = new ArrayList<Clothing>();
-            for (Clothing clothing : itemsInCart) {
-                removeStockList.add(clothing);
-            }
-            return removeStockList;
-        }
-
-        private void addItem(Clothing clothing){
-            itemsInCart.add(clothing);
-        }
-
-        private void removeItem(){
-            //String response = ui.getInput("Name the item you want removed");
-            int response = ui.getNumericInput("Type the ID of the item you want removed");
-            Iterator<Clothing> iterator = itemsInCart.iterator();
-
-            while (iterator.hasNext()){
-                Clothing clothing = iterator.next();
-                if(clothing.getID() == response){
-                    iterator.remove();
-                } else {
-                    ui.displayMsg("Seems like the product id you typed doesn't exist, try again");
-                    removeItem();
-                }
-            }
-            ui.displayMsg("The product was successfully removed");
-            CartDialog();
-        }
-
-        private void clearCart(){
-            itemsInCart.clear();
-        }
+    private void clearCart(){
+        itemsInCart.clear();
+    }
 }
-
-
-
 
