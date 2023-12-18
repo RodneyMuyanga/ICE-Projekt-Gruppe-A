@@ -14,6 +14,7 @@ public class Tshirt extends Clothing {
 
     @Override
     public String toString() {
-        return "T-shirt ID: " + ID + " | Price: " + price + " | Discount price (if discount=true): " + discountPrice + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color+"\n";    }
+        return "T-shirt ID: " + ID + " | Price: " + price + "$" + " | Member discount: " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type + " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color + "\n";
+    }
 }
 

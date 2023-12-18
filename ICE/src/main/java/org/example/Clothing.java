@@ -56,7 +56,7 @@ public class Clothing {
     public String getModel(){return model;}
 
     public String toString(){
-        return "Clothing ID: " + ID + " | Price: " + price + "$" + " | Discount price (if discount=true): " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color+"\n";
+        return "Clothing ID: " + ID + " | Price: " + price + "$" + " | Member discount: " + discountPrice + "$" + " | Size: " + size + "\nStock: " + stock + " | Type: " + type +  " | Brand: " + brand + " | Model: " + model + " | Gender: " + gender + " | Color: " + color+"\n";
     }
 
 }

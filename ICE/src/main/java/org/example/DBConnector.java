@@ -87,35 +87,38 @@ public class DBConnector {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Iterate through the items in the shopping cart
-            for (Clothing item : itemsInCart) {
+            for (Clothing clothing : itemsInCart) {
                 // Build and execute the SQL query based on product type
-                String sql = "";
-                switch (item.getType()) {
-                    case "Boots":
-                        sql = "UPDATE Boots SET Stock = Stock - 1 WHERE ID + gender = ?";
+                String query = "";
+                switch (clothing.getType()) {
+                    case "boots":
+                        query = "UPDATE boots SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
-                    case "Hoodies":
-                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                    case "hoodies":
+                        query = "UPDATE hoodies SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
-                    case "Jackets":
-                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                    case "jacket":
+                        query = "UPDATE jacket SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
-                    case "Pants":
-                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                    case "pants":
+                        query = "UPDATE pants SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
-                    case "Sneakers":
-                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                    case "sneakers":
+                        query = "UPDATE sneakers SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
-                    case "TShirts":
-                        sql = "UPDATE Hoodies SET Stock = Stock - 1 WHERE ID + gender= ?";
+                    case "tshirt":
+                        query = "UPDATE tshirt SET Stock = Stock - 1 WHERE ID = ? AND gender = ?";
                         break;
                 }
 
                 // Execute the update if a valid SQL statement was built
-                if (!sql.isEmpty()) {
-                    stmt = conn.prepareStatement(sql);
-                    stmt.setInt(1, item.getID());
-                    stmt.executeUpdate();
+                if (!query.isEmpty()) {
+                    PreparedStatement updateStock = conn.prepareStatement(query);
+                    updateStock.setInt(1, clothing.getID());
+                    updateStock.setString(2, clothing.getGender());
+                    int rowAffected = updateStock.executeUpdate();
+                    System.out.println(rowAffected);
+                    updateStock.close();
                 }
             }
         } catch (SQLException | ClassNotFoundException se) {

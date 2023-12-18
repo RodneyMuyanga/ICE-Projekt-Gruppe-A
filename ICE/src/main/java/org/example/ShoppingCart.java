@@ -6,6 +6,7 @@ import java.util.Iterator;
 public class ShoppingCart {
     private final TextUI ui = new TextUI();
     private final DBConnector db = new DBConnector();
+
     protected ArrayList<Clothing> itemsInCart = new ArrayList<>();
     private final ArrayList<String>ShoppingCartMenu = new ArrayList<>();
     private int paymentID;
@@ -15,7 +16,6 @@ public class ShoppingCart {
     public ArrayList<Clothing> getItemsInCart() {
         return itemsInCart;
     }
-
     private void displayCart(){
         for (Clothing clothing : itemsInCart){
             System.out.println((clothing));
@@ -26,7 +26,7 @@ public class ShoppingCart {
         if ( ShoppingCartMenu.size() != 3){
             ShoppingCartMenu.add("[1] Checkout");
             ShoppingCartMenu.add("[2] Shop more");
-            ShoppingCartMenu.add("[3] Remove items");
+            ShoppingCartMenu.add("[3] Remove item(s)");
         }
         for (String i : ShoppingCartMenu){
             System.out.println(i);
@@ -54,7 +54,7 @@ public class ShoppingCart {
             case "2":
             case "shop":
             case "shop more":
-                homepage.homepageMenuDialog();
+                // retunere til homepageMenu;
                 break;
             case "3":
             case "remove":
@@ -78,8 +78,8 @@ public class ShoppingCart {
 
     public void paymentDialog() {
         displayCart();
+        db.readUserData();
         ui.displayMsg("\nYour total is: " + getTotalPrice() + "$\n");
-
 
         String input = "";
         ui.displayMsg("Would you like to Login or register payment information? ");
@@ -89,10 +89,14 @@ public class ShoppingCart {
         if (!input.equalsIgnoreCase("L")) {
             addPaymentDetails();
         }
-        else {
+        else if (input.equalsIgnoreCase("L")){
+            //homepage.login();
+            return;
         }
         // Perform the transaction
+
         ui.displayMsg("\n Verifying card or number");
+
         ui.displayMsg("");
 
         ui.displayMsg("Congratulations, your payment have been approved. \nHere is your receipt:");
@@ -100,11 +104,12 @@ public class ShoppingCart {
         ui.displayMsg("Total: " + getTotalPrice() + "$\n");
 
 
-        removeStock();
+        db.removeStock(itemsInCart);
         clearCart();
     }
 
     private void addPaymentDetails() {
+
         String inputName = ui.getInput("Enter your Name:");
         String inputEmail = ui.getInput("Enter your e-mail");
         String inputAddress = ui.getInput("Enter delivery adress");
@@ -127,7 +132,6 @@ public class ShoppingCart {
             addPaymentDetails();
 
         }
-
 
         String input = "";
         ui.displayMsg("\n Would you like to pay with card? or Mobilepay? ");
@@ -161,35 +165,51 @@ public class ShoppingCart {
         }
     }
 
+    /*private ArrayList<Clothing> removeStock() {
+        ArrayList<Clothing> removeStockList = new ArrayList<Clothing>();
+        for (Clothing clothing : itemsInCart) {
+            removeStockList.add(clothing);
+        }
+        return removeStockList;
+    }*/
 
-    private void removeStock() {
-
-
-
-    }
     private void addItem(Clothing clothing){
         itemsInCart.add(clothing);
     }
 
+    private void removeItem() {
+        int response = ui.getNumericInput("Type the ID of the item you want to remove");
+        int count = 0;
 
-
-    private void removeItem(){
-        //String response = ui.getInput("Name the item you want removed");
-        int response = ui.getNumericInput("Type the ID of the item you want removed");
-        Iterator<Clothing> iterator = itemsInCart.iterator();
-
-        while (iterator.hasNext()){
-            Clothing clothing = iterator.next();
-            if(clothing.getID() == response){
-                iterator.remove();
-            } else {
-                ui.displayMsg("Seems like the product id you typed doesn't exist, try again");
-                removeItem();
+        // Count occurrences of the item with the given ID
+        for (Clothing clothing : itemsInCart) {
+            if (clothing.getID() == response) {
+                count++;
             }
         }
-        ui.displayMsg("The product was successfully removed");
+
+        if (count > 0) {
+            int removeCount = ui.getNumericInput("There are " + count + " items with that ID. How many do you want to remove?");
+
+            // Remove specified number of items
+            Iterator<Clothing> iterator = itemsInCart.iterator();
+            int removed = 0;
+
+            while (iterator.hasNext() && removed < removeCount) {
+                Clothing clothing = iterator.next();
+                if (clothing.getID() == response) {
+                    iterator.remove();
+                    removed++;
+                }
+            }
+            ui.displayMsg("Successfully removed " + removed + " items with ID " + response);
+        } else {
+            ui.displayMsg("No items found with the specified ID.");
+        }
+
         CartDialog();
     }
+
 
     private void clearCart(){
         itemsInCart.clear();
