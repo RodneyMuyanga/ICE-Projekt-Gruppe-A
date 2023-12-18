@@ -16,11 +16,6 @@ public class ShoppingCart {
     public ArrayList<Clothing> getItemsInCart() {
         return itemsInCart;
     }
-    private void displayCart(){
-        for (Clothing clothing : itemsInCart){
-            System.out.println((clothing));
-        }
-    }
 
     public void shoppingMenu() {
         if ( ShoppingCartMenu.size() != 3){
@@ -31,6 +26,21 @@ public class ShoppingCart {
         for (String i : ShoppingCartMenu){
             System.out.println(i);
         }
+    }
+
+    // ------- MARCUS⤵️ 😎----------------------------------------------------------------------
+    private void displayCart(){
+        for (Clothing clothing : itemsInCart){
+            System.out.println((clothing));
+        }
+    }
+
+    public int getTotalPrice(){
+        int total = 0;
+        for (Clothing c : itemsInCart){
+            total += c.price;
+        }
+        return total;
     }
 
     public void CartDialog(){
@@ -67,14 +77,7 @@ public class ShoppingCart {
                 break;
         }
     }
-
-    public int getTotalPrice(){
-        int total = 0;
-        for (Clothing c : itemsInCart){
-            total += c.price;
-        }
-        return total;
-    }
+    // ------- MARCUS⤴️ ----------------------------------------------------------------------
 
     public void paymentDialog() {
         displayCart();

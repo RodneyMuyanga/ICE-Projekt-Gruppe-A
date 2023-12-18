@@ -105,6 +105,7 @@ public class Homepage {
             selectClothesOrNotMenu.add("[2] Back");
         }
     }
+    /*---------------------------------------------------------------------------------------------RODNEY------------------------------------------------------*/
 
     public void homepageMenuDialog() {
         //homepageMenu();
@@ -161,7 +162,7 @@ public class Homepage {
                 break;
         }
     }
-
+    /*---------------------------------------------------------------------------------------------RODNEY------------------------------------------------------*/
 
     private void homepageMenuDialog_LoggedIn() {
         //homepageMenu();
@@ -218,7 +219,7 @@ public class Homepage {
                 break;
         }
     }
-    
+
     private void selectClothesOrNotDialogQuestionMark() {
         //selectClothesOrNotMenu();
         ui.displayMsg("Choose an option");
@@ -243,7 +244,7 @@ public class Homepage {
                 break;
         }
     }
-
+/*---------------------------------------------------------------------------------------------MATEEN------------------------------------------------------*/
     private void selectClothesDialog(ArrayList<Clothing> clothing) {
         String userInput = ui.getInput("Type the ID-number of the clothes you want to add to your cart\nPress X to return to the previous menu");
 
@@ -305,6 +306,7 @@ public class Homepage {
             selectClothesDialog(clothing);
         }
     }
+    /*---------------------------------------------------------------------------------------------MATEEN------------------------------------------------------*/
 
     public void chooseClothingMenu() {
         if (chooseClothingMenu.size() != 8) {
@@ -318,14 +320,12 @@ public class Homepage {
             chooseClothingMenu.add("[8] Back");
         }
     }
-
     public void chooseRecycledClothingMenu() {
         if (chooseRecycledClothingMenu.size() != 2) {
             chooseRecycledClothingMenu.add("[1] All clothes");
             chooseRecycledClothingMenu.add("[2] Back");
         }
     }
-
     public ArrayList<Clothing> chooseMenSelection() {
         //chooseClothingMenu();
         ui.displayMsg("Men's Clothing Menu:\n");
@@ -405,11 +405,11 @@ public class Homepage {
             case "8":
             case "back":
                 ui.displayMsg("Returning back to the home-menu...");
-                if (isLoggedIn()) {
-                    homepageMenuDialog_LoggedIn();
-                } else {
+//                if (isLoggedIn() == true) {
+//                    homepageMenuDialog_LoggedIn();
+//                } else {
                     homepageMenuDialog();
-                }
+//                }
                 break;
             default:
                 ui.displayMsg("Seems like you made a typo, try again\n");
@@ -418,7 +418,6 @@ public class Homepage {
         }
         return null;
     }
-
     public ArrayList<Clothing> chooseWomenSelection() {
         //chooseClothingMenu();
         ui.displayMsg("Women's Clothing Menu:");
@@ -635,7 +634,7 @@ public class Homepage {
     public ArrayList<Clothing> getChosenClothes() {
         return chosenClothes;
     }
-
+// --------------------------------------------------------------REBECCA--------------------------------------
     public void sellingDialog() {
         if (isLoggedIn()) {
             ui.displayMsg("");
@@ -697,7 +696,8 @@ public class Homepage {
         String input = ui.getInput("Are the information correct? : \n" + " Brand: " + inputBrand + "\n Model: " + inputModel + "\n Gender: " + inputGender + "\n Size: " + inputSize + "\n Color: " + inputColor + "\n\nPress 'Y' for yes and 'N' for no.");
 
         if (input.equalsIgnoreCase("Y")) {
-
+            ui.displayMsg("\nThe clothing is now registered");
+            homepageMenuDialog();
 
         } else if (input.equalsIgnoreCase("N")) {
             ui.displayMsg("Try again");
@@ -705,7 +705,6 @@ public class Homepage {
         }
 
 
-        ui.displayMsg("\nThe clothing is now registered");
 
         int sellPrice = paymentCalculator();
         RecycledClothes recycledClothing = new RecycledClothes(inputBrand, inputModel, inputGender, inputSize, inputColor, sellPrice);
@@ -734,7 +733,7 @@ public class Homepage {
         return (int) sellPrice;
     }
 
-
+//________________________________
 
     public ArrayList<Clothing> getItemsInCart() {
         return itemsInCart;
